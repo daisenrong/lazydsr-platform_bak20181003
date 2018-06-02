@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:include="commons/common_head :: commonHead('MENU')">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div>
+
+
+    <!-- Content Wrapper. Contains page content -->
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            菜单管理
+            <small>菜单列表</small>
+
+        </h1>
+
+        <!--<ol class="">-->
+        <!--&lt;!&ndash;<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li><a href="#">Charts</a></li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li class="active">Flot</li>&ndash;&gt;-->
+        <!--<li class="layui-btn layui-btn-sm" ><a onclick="openViewBig(ctx+'/page/menu/menuAdd','新增')">新增</a></li>-->
+        <!--</ol>-->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!--menu列表-->
+
+        <div class="layui-btn-group menu">
+            <button class="layui-btn" onclick="openViewBig(ctx+'/page/menu/menuAdd','新增')">新增</button>
+            <button class="layui-btn layui-btn-danger" data-type="getCheckData">删除</button>
+            <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+            <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div th:replace="fragment/resource::ztree(aa)"></div>
+                <div id="ztree" class="ztree"></div>
+
+            </div>
+            <!-- /.col -->
+        </div>
+
+    </section>
+</div>
+
+<!-- ./wrapper -->
+<div th:include="commons/common_js :: commonJs"></div>
+
+
+<script type="text/javascript" th:inline="text">
+    var setting = {
+        view: {
+            addHoverDom: addHoverDom,
+            removeHoverDom: removeHoverDom,
+            // selectedMulti: false
+        },
+        check: {
+            enable: false
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        edit: {
+            enable: true
+        }
+    };
+    var zNodes = [];
+    $(document).ready(function () {
+        loadData();
+
+    });
+
+    function loadData() {
+        $.ajax({
+            type: 'get',
+            url: ctx + '/menu/json/ztree',
+            contentType: 'application/json',
+            dataType: "json",
+            // data: {ids: JSON.stringify(ids)},
+            success: function (data) {
+                if (data.code = 200) {
+                    zNodes = data.data;
+                    $.fn.zTree.init($("#ztree"), setting, zNodes);
+                } else {
+                    console.log("数据加载失败！");
+                }
+            }
+        });
+    }
+
+    function addHoverDom(treeId, treeNode) {
+        var sObj = $("#" + treeNode.tId + "_span");
+        if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+        var addStr = "<span class='button add' id='addBtn_" + treeNode.tId + "' title='新增'  onfocus='this.blur();'></span>";
+        sObj.after(addStr);
+        var btn = $("#addBtn_" + treeNode.tId);
+        if (btn) btn.bind("click", function () {
+            var zTree = $.fn.zTree.getZTreeObj("ztree");
+            openViewBig(ctx + '/page/menu/menuAdd?pId=' + treeNode.id, '新增', function () {
+                // console.log("刷新ztree树");
+                loadData();
+
+                // zTree.addNodes(treeNode, {id: (100 + newCount), pId: treeNode.id, name: "new node" + (newCount++)});
+            });
+
+            return false;
+        });
+
+    };
+
+    function removeHoverDom(treeId, treeNode) {
+        $("#addBtn_" + treeNode.tId).unbind().remove();
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--
+       header
+       PROJECT_NAME: lazydsr-web-template
+       PACKAGE_NAME: templates.thymeleaf.fragment
+       Created by Lazy on 2018/3/12 23:07
+       Version: 0.1
+       Info: 公用头部
+    -->
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--ztree插件开始-->
+<div th:fragment="ztree(id)">
+    <link rel="stylesheet" th:href="@{/static/plugins/ztree/css/bootstrapStyle/bootstrapStyle.css}" href="/static/plugins/ztree/css/bootstrapStyle/bootstrapStyle.css" type="text/css">
+    <script type="text/javascript" th:src="@{/static/plugins/ztree/js/jquery.ztree.core.js}" src="/static/plugins/ztree/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" th:src="@{/static/plugins/ztree/js/jquery.ztree.excheck.js}" src="/static/plugins/ztree/js/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" th:src="@{/static/plugins/ztree/js/jquery.ztree.exedit.js}" src="/static/plugins/ztree/js/jquery.ztree.exedit.js"></script>
+
+
+</div>
+<!--ztree插件开始-->
+
+</body>
+</html>

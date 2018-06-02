@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:include="commons/common_head :: commonHead('MENU')">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div>
+
+
+    <!-- Content Wrapper. Contains page content -->
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            菜单管理
+            <small>菜单列表</small>
+
+        </h1>
+
+        <!--<ol class="">-->
+        <!--&lt;!&ndash;<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li><a href="#">Charts</a></li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li class="active">Flot</li>&ndash;&gt;-->
+        <!--<li class="layui-btn layui-btn-sm" ><a onclick="openViewBig(ctx+'/page/menu/menuAdd','新增')">新增</a></li>-->
+        <!--</ol>-->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!--menu列表-->
+
+        <div class="layui-btn-group menu">
+            <button class="layui-btn" onclick="openViewBig(ctx+'/page/menu/menuAdd','新增')">新增</button>
+            <button class="layui-btn layui-btn-danger" data-type="getCheckData">删除</button>
+            <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+            <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div th:replace="fragment/resource::ztree(aa)"></div>
+                <div id="ztree" class="ztree"></div>
+
+            </div>
+            <!-- /.col -->
+        </div>
+
+    </section>
+</div>
+
+<!-- ./wrapper -->
+<div th:include="commons/common_js :: commonJs"></div>
+
+
+<script type="text/javascript" th:inline="text">
+    var setting = {
+        view: {
+            addHoverDom: addHoverDom,
+            removeHoverDom: removeHoverDom,
+            // selectedMulti: false
+        },
+        check: {
+            enable: false
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        edit: {
+            enable: true,
+            showRemoveBtn: setRemoveBtn,
+            showRenameBtn: setRenameBtn
+        },
+        callback: {
+            beforeEditName: updateNode, // 用于捕获节点编辑按钮的 click 事件，并且根据返回值确定是否允许进入名称编辑状态
+            beforeRemove: deleteNode,     // 用于捕获节点被删除之前的事件回调函数，并且根据返回值确定是否允许删除操作
+            // onClick : showDetail            // 点击节点时，显示节点详细信息
+        }
+    };
+    var zNodes = [];
+    $(document).ready(function () {
+        loadData();
+
+    });
+
+    function loadData() {
+        $.ajax({
+            type: 'get',
+            url: ctx + '/menu/json/ztree',
+            contentType: 'application/json',
+            dataType: "json",
+            // data: {ids: JSON.stringify(ids)},
+            success: function (data) {
+                if (data.code = 200) {
+                    zNodes = data.data;
+                    $.fn.zTree.init($("#ztree"), setting, zNodes);
+                } else {
+                    console.log("数据加载失败！");
+                }
+            }
+        });
+    }
+
+    function addHoverDom(treeId, treeNode) {
+        var sObj = $("#" + treeNode.tId + "_span");
+        if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) {
+            return;
+        }
+        //添加
+        var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+            + "' title='添加菜单'  style='color:red;' onfocus='this.blur();'></span>";
+        sObj.after(addStr);
+        var btn = $("#addBtn_" + treeNode.tId);
+        if (btn) btn.bind("click", function () {
+            var zTree = $.fn.zTree.getZTreeObj(treeId);
+            addNode(treeId, treeNode);
+        });
+
+
+        return false;
+    };
+
+    //隐藏按钮
+    function removeHoverDom(treeId, treeNode) {
+        $("#addBtn_" + treeNode.tId).unbind().remove();
+    }
+    function setRemoveBtn(treeId, treeNode) {
+        return !treeNode.isParent&&treeNode.showRemoveBtn;
+    }
+    function setRenameBtn(treeId, treeNode) {
+        return treeNode.showRenameBtn;
+    }
+
+    //添加
+    function addNode(treeId, treeNode) {
+        // var url = getPath() + "/manager/buildinfo/toAddJsp?structureid=" + id;
+        // location.href = url;
+        openViewBig(ctx + '/page/menu/menuAdd?pId=' + treeNode.id, '新增', function () {
+            // console.log("刷新ztree树");
+            loadData();
+            // zTree.addNodes(treeNode, {id: (100 + newCount), pId: treeNode.id, name: "new node" + (newCount++)});
+        });
+    }
+
+    //修改
+    function updateNode(treeId, treeNode) {
+        var url = ctx + "/menu/edit/" + treeNode.id;
+        // location.href = url + "?id=" + id + "&isAdd=2";
+        openViewBig(url, '更新', function () {
+            // console.log("刷新ztree树");
+            loadData();
+            // zTree.addNodes(treeNode, {id: (100 + newCount), pId: treeNode.id, name: "new node" + (newCount++)});
+        });
+        return false;
+    }
+
+    //删除
+    function deleteNode(treeId, treeNode) {
+        layer.confirm('您确定要删除 -->' + treeNode.name + "吗?", function (index) {
+            var url = ctx + "/menu/" + treeNode.id;
+            $.ajax({
+                type: "delete",
+                url: url,
+                contentType: 'application/json',
+                // data: JSON.stringify(arr),
+                success: function (data, status) {
+                    loadData();
+                }
+            });
+            layer.close(index);
+        })
+        return false;
+
+    }
+</script>
+</body>
+</html>

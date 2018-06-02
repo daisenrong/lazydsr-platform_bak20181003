@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="commons/common_head :: commonHead('首页')">
+</head>
+<!-- Theme style -->
+<!--<link rel="stylesheet" th:href="@{/static/css/adminlazy.css}" href="../../static/css/adminlazy.css">-->
+<!-- AdminLazy Skins. Choose a skin from the css/skins
+     folder instead of downloading all of them to reduce the load. -->
+<link rel="stylesheet" th:href="@{/static/css/skins/_all-skins.css}" href="/static/css/skins/_all-skins.css">
+<body class="hold-transition skin-blue sidebar-mini fixed">
+<!--<div id="ajax-loader" style="cursor: progress; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: #fff; z-index: 10000; overflow: hidden;">-->
+    <!--<img th:src="@{/static/img/ajax-loader.gif}" src="/static/img/ajax-loader.gif" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto;"/>-->
+<!--</div>-->
+<div class="wrapper">
+
+    <!--头部  开始-->
+    <header th:replace="fragment/header :: header" class="main-header">
+
+    </header>
+    <!--头部  结束-->
+
+    <!--左侧菜单  开始-->
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside th:replace="fragment/left :: left" class="main-sidebar">
+
+    </aside>
+    <!--左侧菜单  结束-->
+
+
+    <!--主要内容区域  开始-->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper" th:replace="fragment/content :: content">
+
+
+    </div>
+    <!-- /.content-wrapper -->
+    <!--主要内容区域  结束-->
+
+    <!--&lt;!&ndash;脚步  开始&ndash;&gt;-->
+    <!--<footer class="main-footer">-->
+    <!--<div class="pull-right hidden-xs">-->
+    <!--<b>Version</b> 2.4.0-->
+    <!--</div>-->
+    <!--<strong>Copyright &copy; 2014-2016 <a target="_blank" href="http://lazycode.vip">LazyCode</a>.</strong> All-->
+    <!--rights-->
+    <!--reserved.-->
+    <!--</footer>-->
+    <!--&lt;!&ndash;脚步  结束&ndash;&gt;-->
+
+
+    <!--右侧控制菜单  开始-->
+    <!-- Control Sidebar -->
+    <aside th:replace="fragment/right :: right" class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+
+    </aside>
+    <!-- /.control-sidebar -->
+    <!--右侧控制菜单  结束-->
+
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+
+<!-- jQuery UI 1.11.4 -->
+<!--<script src="../static/plugins/jquery-ui/js/jquery-ui.min.js"></script>-->
+<script>
+
+</script>
+<div th:include="commons/common_js :: commonJs"></div>
+<!-- AdminLazy App -->
+<!--<script th:src="@{/static/js/pages/adminlazy.js?v=1.0}" src="/static/js/pages/adminlazy.js?v=1.0"></script>-->
+<!-- AdminLazy dashboard demo (This is only for demo purposes) -->
+<!--<script src="../static/js/pages/dashboard.js"></script>-->
+<!-- AdminLazy for demo purposes -->
+<script th:src="@{/static/js/pages/index/index.js?v=1.2}" src="/static/js/pages/index/index.js?v=1.1"></script>
+<script th:src="@{/static/js/pages/index/indextab.js?v=1.0}" src="/static/js/pages/index/indextab.js?v=1.0"></script>
+
+</body>
+</html>
