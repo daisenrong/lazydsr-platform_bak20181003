@@ -70,6 +70,9 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 
         };
     }
+
+
+
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         //初始化一个RedisCacheWriter

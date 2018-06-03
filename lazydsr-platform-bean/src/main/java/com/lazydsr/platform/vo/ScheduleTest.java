@@ -12,12 +12,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ScheduleTest {
-    public void runschedule(){
-      log.info("runschedule");
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void runschedule() {
+        log.info("runschedule");
+        //try {
+        //    Thread.sleep(100);
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //}
     }
 }

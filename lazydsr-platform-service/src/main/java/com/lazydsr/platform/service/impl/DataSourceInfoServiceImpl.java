@@ -1,6 +1,7 @@
 package com.lazydsr.platform.service.impl;
 
 //import com.lazydsr.platform.config.cache.redis.RedisService;
+
 import com.lazydsr.platform.entity.DataSourceInfo;
 import com.lazydsr.platform.mapper.DataSourceInfoMapper;
 import com.lazydsr.platform.service.DataSourceInfoService;
@@ -8,9 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * DatasourceInfoServiceImpl
@@ -23,11 +30,13 @@ import java.util.List;
 @Service
 @Slf4j
 public class DataSourceInfoServiceImpl implements DataSourceInfoService {
-    private static final String prefix = "dataSourceInfo";
+    private static final String prefix = "dataSourceInfo::";
     @Autowired
     private DataSourceInfoMapper dataSourceInfoMapper;
     //@Autowired
     //private RedisService redisService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public DataSourceInfo add(DataSourceInfo dataSourceInfo) {
@@ -44,7 +53,8 @@ public class DataSourceInfoServiceImpl implements DataSourceInfoService {
     @Override
     public DataSourceInfo update(DataSourceInfo dataSourceInfo) {
         int count = dataSourceInfoMapper.updateByPrimaryKey(dataSourceInfo);
-        return dataSourceInfoMapper.selectByPrimaryKey(dataSourceInfo.getId());
+        redisTemplate.delete(prefix+dataSourceInfo.getId());
+        return findById(dataSourceInfo.getId());
     }
 
     @Override
@@ -55,29 +65,39 @@ public class DataSourceInfoServiceImpl implements DataSourceInfoService {
 
     @Override
     public List<DataSourceInfo> findAll() {
+        String key = prefix + Thread.currentThread().getStackTrace()[1].getMethodName();
+        ListOperations opsForList = redisTemplate.opsForList();
+        List<DataSourceInfo> list = opsForList.range(key, 0, -1);
         //List<DataSourceInfo> list = redisService.getList(prefix + "::findAll", 0, -1);
-        List<DataSourceInfo> list = null;
 
-        if (list == null) {
+        if (CollectionUtils.isEmpty(list)) {
             log.info("缓存数据获取失败，加载到缓存");
             list = dataSourceInfoMapper.selectAllNormal();
             //redisService.setList(prefix + "::findAll", list);
-        }
+            if (!CollectionUtils.isEmpty(list)){
+                opsForList.leftPushAll(key, list);
+                redisTemplate.expire(key,10,TimeUnit.MINUTES);
+            }
 
+        }
         return list;
     }
 
     @Override
     public List<DataSourceInfo> findAllNormal() {
 
-        //List<DataSourceInfo> list = redisService.getList(prefix + "::findAllNormal", 0, -1);
-        List<DataSourceInfo> list = null;
+        String key = prefix + Thread.currentThread().getStackTrace()[1].getMethodName();
+        ListOperations opsForList = redisTemplate.opsForList();
+        List<DataSourceInfo> list = opsForList.range(key, 0, -1);
 
-        if (list == null) {
+        if (CollectionUtils.isEmpty(list)) {
             log.error("缓存数据获取失败，加载到缓存");
             list = dataSourceInfoMapper.selectAllNormal();
-            //if (list != null)
-            //    redisService.setList(prefix + "::findAllNormal", list);
+            if (!CollectionUtils.isEmpty(list)){
+                opsForList.leftPushAll(key, list);
+                redisTemplate.expire(key,10,TimeUnit.MINUTES);
+            }
+
         }
 
         return list;
