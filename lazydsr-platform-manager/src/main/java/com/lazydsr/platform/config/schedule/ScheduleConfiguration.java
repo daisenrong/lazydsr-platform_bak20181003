@@ -8,7 +8,6 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class ScheduleConfiguration {
 
         // 这里从数据库中获取任务信息数据
         List<ScheduleJob> jobList = scheduleJobService.findAll();
-
+        log.error("scheduleList"+jobList);
         for (ScheduleJob job : jobList) {
             addJob(job);
         }
@@ -60,6 +59,7 @@ public class ScheduleConfiguration {
      */
     public void addJob(ScheduleJob job) throws SchedulerException {
         if (job == null || !ScheduleJob.STATUS_RUNNING.equals(job.getJobstatus())) {
+            log.error("scheduleJob定时任务不执行");
             return;
         }
 
@@ -76,12 +76,15 @@ public class ScheduleConfiguration {
             JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity(job.getName(), job.getJobgroup()).build();
 
             jobDetail.getJobDataMap().put("scheduleJob", job);
+            //jobDetail.getJobDataMap().put(job.getJobgroup() + "_" + job.getName(), job);
 
             CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCron());
 
             trigger = TriggerBuilder.newTrigger().withIdentity(job.getName(), job.getJobgroup()).withSchedule(scheduleBuilder).build();
 
             scheduler.scheduleJob(jobDetail, trigger);
+
+            log.info("添加定时任务：" + job.getJobgroup() + "_" + job.getName());
         } else {
             // Trigger已存在，那么更新相应的定时设置
             CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCron());

@@ -2,6 +2,10 @@ package com.lazydsr.platform.vo;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
 /**
  * ScheduleTest
  * PROJECT_NAME: lazydsr-platform
@@ -14,10 +18,18 @@ import lombok.extern.slf4j.Slf4j;
 public class ScheduleTest {
     public void runschedule() {
         log.info("runschedule");
-        //try {
-        //    Thread.sleep(100);
-        //} catch (InterruptedException e) {
-        //    e.printStackTrace();
-        //}
+        Socket socket = new Socket();
+        try {
+            socket.connect(new InetSocketAddress("172.25.1.246", 80));
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
