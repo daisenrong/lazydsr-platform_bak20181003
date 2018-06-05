@@ -26,6 +26,7 @@ public class ScheduleTest {
 
         } finally {
             try {
+                log.info("close connection");
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
