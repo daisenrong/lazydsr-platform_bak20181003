@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * QuartzConfigration
  * PROJECT_NAME: lazydsr-web-template
- * PACKAGE_NAME: com.lazydsr.platform.config.schedule
+ * PACKAGE_NAME: com.lazydsr.platform.config.scheduleJob
  * Created by Lazy on 2018/5/14 01:44
  * Version: 0.1
  * Info: 定时任务配置类

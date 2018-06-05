@@ -9,7 +9,10 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
@@ -29,6 +32,8 @@ public class MenuServiceImpl implements MenuService {
     private static final String prefix = "menu";
     @Autowired
     private MenuMapper menuMapper;
+    @Autowired
+    private RedisTemplate redisTemplate;
     //@Autowired
     //private RedisService redisService;
 
@@ -82,17 +87,22 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<Menu> findAllNormal() {
+        String key=prefix+"::"+Thread.currentThread().getStackTrace()[1].getMethodName();
+        ListOperations opsForList = redisTemplate.opsForList();
         //List<Menu> list = redisService.getList(prefix + "::findAllNormal");
-        List<Menu> list = null;
+        List<Menu> list = opsForList.range(key,0,-1);
         //log.info("缓存" + list==null?"null":list.toString());
 
-        if (list == null || list.size() == 0) {
+        if (CollectionUtils.isEmpty(list)) {
             log.warn("缓存为空，查询数据库，添加缓存");
             list = menuMapper.selectAllNormal();
             log.info("数据库" + list.toString());
             //if (list != null)
                 //redisService.getRedisTemplate().opsForList().leftPushAll(prefix + "::findAllNormal",list);
                 //redisService.setListAll(prefix + "::findAllNormal", list);
+            if (!CollectionUtils.isEmpty(list)){
+                opsForList.leftPushAll(key,list);
+            }
         }
         return list;
     }

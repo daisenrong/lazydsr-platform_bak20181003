@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/page")
-public class BaseController {
+public class PageController {
     @GetMapping("/{page}")
     public String toPage(@PathVariable String page) {
         return page;

@@ -11,7 +11,7 @@ import org.quartz.JobExecutionException;
 /**
  * QuartzJobFactoryDisallowConcurrentExecution
  * PROJECT_NAME: lazydsr-web-template
- * PACKAGE_NAME: com.lazydsr.platform.config.schedule
+ * PACKAGE_NAME: com.lazydsr.platform.config.scheduleJob
  * Created by Lazy on 2018/5/16 14:39
  * Version: 0.1
  * Info: @TODO:...
