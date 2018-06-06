@@ -1,10 +1,8 @@
 package com.lazydsr.platform.config.context;
 
 import com.lazydsr.platform.config.datasource.DynamicDataSourceConfiguration;
-import com.lazydsr.platform.config.schedule.ScheduleConfiguration;
 import com.lazydsr.platform.config.system.SystemInfoConfiguration;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -21,8 +19,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ContextLoadEvent implements ApplicationRunner {
 
-    @Autowired
-    private ScheduleConfiguration scheduleConfiguration;
+    //@Autowired
+    //private ScheduleJobConfiguration scheduleJobConfiguration;
 
     /**
      * Callback used to run the bean.
@@ -54,12 +52,12 @@ public class ContextLoadEvent implements ApplicationRunner {
 
 
         log.info("加载定时任务开始");
-        try {
-            scheduleConfiguration.init();
-        } catch (Exception e) {
-            log.error("加载定时任务异常，" + e);
-            e.printStackTrace();
-        }
+        //try {
+        //    scheduleJobConfiguration.init();
+        //} catch (Exception e) {
+        //    log.error("加载定时任务异常，" + e);
+        //    e.printStackTrace();
+        //}
         log.info("加载定时任务结束");
 
 

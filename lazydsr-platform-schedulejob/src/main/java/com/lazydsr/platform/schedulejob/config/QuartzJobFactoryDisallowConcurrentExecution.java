@@ -1,26 +1,31 @@
-package com.lazydsr.platform.config.schedule;
+package com.lazydsr.platform.schedulejob.config;
 
-import com.lazydsr.platform.entity.ScheduleJob;
+
+import com.lazydsr.platform.schedulejob.bean.ScheduleJob;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+
 /**
- * QuartzJobFactory
+ * QuartzJobFactoryDisallowConcurrentExecution
  * PROJECT_NAME: lazydsr-web-template
  * PACKAGE_NAME: com.lazydsr.platform.config.scheduleJob
- * Created by Lazy on 2018/5/16 14:47
+ * Created by Lazy on 2018/5/16 14:39
  * Version: 0.1
  * Info: @TODO:...
  */
+@DisallowConcurrentExecution
 @Slf4j
-public class QuartzJobFactory implements Job {
-    //public final Logger log = Logger.getLogger(this.getClass());
+public class QuartzJobFactoryDisallowConcurrentExecution implements Job {
+
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         ScheduleJob scheduleJob = (ScheduleJob) context.getMergedJobDataMap().get("scheduleJob");
         ScheduleJobUtils.invokMethod(scheduleJob);
+
     }
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
-<head th:include="commons/common_head :: commonHead('MENU')">
+<head th:include="commons/common_head :: commonHead('SCHEDULEJOB')">
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div>
@@ -10,8 +10,8 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            菜单管理
-            <small>菜单列表</small>
+            定时任务管理
+            <small>定时任务列表</small>
 
         </h1>
 
@@ -28,7 +28,7 @@
         <!--menu列表-->
 
         <div class="layui-btn-group menu">
-            <button class="layui-btn" onclick="openViewBig(ctx+'/page/menu/menuAdd','新增')">新增</button>
+            <button class="layui-btn" onclick="openViewBig(ctx+'/page/scheduleJob/scheduleJobAdd','新增')">新增</button>
             <button class="layui-btn layui-btn-danger" data-type="getCheckData">删除</button>
             <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
             <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
@@ -85,46 +85,28 @@
                     {field: 'id', title: 'ID', width: 80, sort: true},
                     {field: 'name', title: '名称', width: 100},
                     // {field: 'enName', title: '英文名称', width: 80, sort: true},
-                    {field: 'jobGroup', title: '分组', width: 100},
-                    {field: 'classpath', title: '类', width: 100},
-                    {field: 'method', title: '方法', width: 100},
+                    {field: 'jobgroup', title: '分组', width: 100},
+                    {field: 'classpath', title: '类', width: 200},
+                    {field: 'method', title: '方法', width: 140},
                     {
                         field: 'concurrent', title: '并发执行', width: 80, sort: true, templet: function (d) {
-                            return getIsOrNo(d.publics);
+                            return getIsOrNo(d.concurrent);
                         }, unresize: true
                     },
+                    {field: 'cron', title: 'cron表达式', width: 140},
+                    {field: 'description', title: '描述', width: 100},
                     {
-                        field: 'icon', title: '图标', width: 80, align: 'center', templet: function (d) {
-                            return '<i class="' + d.icon + '"></i>';
-                        }
-                    },
-                    {
-                        field: 'url', title: 'URL', width: 80, sort: true, templet: function (d) {
-                            return '<a target="_blank" style="color: #5769ff;" href="' + ctx + d.url + '">' + d.url + '</a>';
-                        }
-                    },
-                    // {field: 'target', title: '打开方式', width: 80, sort: true},
-                    {
-                        field: 'publics', title: '可公开', width: 80, sort: true, templet: function (d) {
-                            return getIsOrNo(d.publics);
+                        field: 'jobstatus', title: '启用', width: 80, sort: true, templet: function (d) {
+                            return getIsOrNo(d.jobstatus);
                         }, unresize: true
                     },
+
                     {
-                        field: 'allowEdit', title: '可编辑', width: 80, sort: true, templet: function (d) {
-                            return getIsOrNo(d.allowEdit);
-                        }, unresize: true
-                    },
-                    {field: 'ordernum', title: '排序', width: 80, sort: true},
-                    // {field: 'description', title: '描述', width: 100, sort: true},
-                    // {field: 'allowDelete', title: '可删除', width: 110, sort: true, templet:function (d) {
-                    //     return getIsOrNo(d.allowDelete);
-                    // }, unresize: true},
-                    {
-                        field: 'status', title: '禁用', width: 80, sort: true, templet: function (d) {
+                        field: 'status', title: '数据状态', width: 80, sort: true, templet: function (d) {
                             if (d.status == 0) {
                                 return '正常';
                             } else {
-                                return '<span style="color: #f50305;">禁用</span>';
+                                return '<span style="color: #f50305;">删除</span>';
                             }
                         }, unresize: true
                     },

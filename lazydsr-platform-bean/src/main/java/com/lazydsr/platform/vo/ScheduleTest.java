@@ -33,4 +33,7 @@ public class ScheduleTest {
             }
         }
     }
+    public void runschedule2(){
+        log.info("定时任务执行2");
+    }
 }

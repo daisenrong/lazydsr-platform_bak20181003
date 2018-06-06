@@ -19,17 +19,17 @@ import javax.persistence.Table;
 @Data
 public class ScheduleJob {
 
-    public static final String STATUS_RUNNING = "1";
-    public static final String STATUS_NOT_RUNNING = "0";
-    public static final String CONCURRENT_IS = "1";
-    public static final String CONCURRENT_NOT = "0";
+    public static final String STATUS_RUNNING = "0";
+    public static final String STATUS_NOT_RUNNING = "1";
+    public static final String CONCURRENT_IS = "0";
+    public static final String CONCURRENT_NOT = "1";
 
     @Id
     private String id = UtilUUId.getId();
 
     private String name;
 
-    private String jobgroup;
+    private String jobgroup="default";
 
     private String classpath;
 
@@ -41,7 +41,7 @@ public class ScheduleJob {
 
     private String description;
 
-    private String jobstatus;
+    private String jobstatus="0";
 
 
 

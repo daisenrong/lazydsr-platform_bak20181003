@@ -1,7 +1,8 @@
-package com.lazydsr.platform.config.schedule;
+package com.lazydsr.platform.schedulejob.config;
 
-import com.lazydsr.platform.entity.ScheduleJob;
-import com.lazydsr.platform.service.ScheduleJobService;
+
+import com.lazydsr.platform.schedulejob.bean.ScheduleJob;
+import com.lazydsr.platform.schedulejob.service.ScheduleJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -22,10 +23,10 @@ import java.util.Set;
  * Version: 0.1
  * Info: 定时任务配置类
  */
-@Configuration
-@EnableScheduling
+//@Configuration
+//@EnableScheduling
 @Slf4j
-public class ScheduleConfiguration {
+public class ScheduleJobConfiguration {
 
     //@Scheduled(cron = "0/1 * * * * ?")
     //private void configureTasks() {
@@ -45,7 +46,7 @@ public class ScheduleConfiguration {
 
         // 这里从数据库中获取任务信息数据
         List<ScheduleJob> jobList = scheduleJobService.findAll();
-        log.error("scheduleList"+jobList);
+        log.error("scheduleList" + jobList);
         for (ScheduleJob job : jobList) {
             addJob(job);
         }
@@ -57,43 +58,51 @@ public class ScheduleConfiguration {
      * @param job
      * @throws SchedulerException
      */
-    public void addJob(ScheduleJob job) throws SchedulerException {
-        if (job == null || !ScheduleJob.STATUS_RUNNING.equals(job.getJobstatus())) {
-            log.error("scheduleJob定时任务不执行");
-            return;
-        }
+    public void addJob(ScheduleJob job) {
+        try {
+            if (job == null || !ScheduleJob.STATUS_RUNNING.equals(job.getJobstatus())) {
+                log.error("scheduleJob定时任务不执行");
+                return;
+            }
 
-        Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        TriggerKey triggerKey = TriggerKey.triggerKey(job.getName(), job.getJobgroup());
+            Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            TriggerKey triggerKey = TriggerKey.triggerKey(job.getName(), job.getJobgroup());
 
-        CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
+            CronTrigger trigger = null;
 
-        // 不存在，创建一个
-        if (null == trigger) {
-            Class clazz = ScheduleJob.CONCURRENT_IS.equals(job.getConcurrent()) ? QuartzJobFactory.class : QuartzJobFactoryDisallowConcurrentExecution.class;
-            //Class clazz = QuartzJobFactory.class;
+            trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
 
-            JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity(job.getName(), job.getJobgroup()).build();
 
-            jobDetail.getJobDataMap().put("scheduleJob", job);
-            //jobDetail.getJobDataMap().put(job.getJobgroup() + "_" + job.getName(), job);
+            // 不存在，创建一个
+            if (null == trigger) {
+                Class clazz = ScheduleJob.CONCURRENT_IS.equals(job.getConcurrent()) ? QuartzJobFactory.class : QuartzJobFactoryDisallowConcurrentExecution.class;
+                //Class clazz = QuartzJobFactory.class;
 
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCron());
+                JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity(job.getName(), job.getJobgroup()).build();
 
-            trigger = TriggerBuilder.newTrigger().withIdentity(job.getName(), job.getJobgroup()).withSchedule(scheduleBuilder).build();
+                jobDetail.getJobDataMap().put("scheduleJob", job);
+                //jobDetail.getJobDataMap().put(job.getJobgroup() + "_" + job.getName(), job);
 
-            scheduler.scheduleJob(jobDetail, trigger);
+                CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCron());
 
-            log.info("添加定时任务：" + job.getJobgroup() + "_" + job.getName());
-        } else {
-            // Trigger已存在，那么更新相应的定时设置
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCron());
+                trigger = TriggerBuilder.newTrigger().withIdentity(job.getName(), job.getJobgroup()).withSchedule(scheduleBuilder).build();
 
-            // 按新的cronExpression表达式重新构建trigger
-            trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
+                scheduler.scheduleJob(jobDetail, trigger);
 
-            // 按新的trigger重新设置job执行
-            scheduler.rescheduleJob(triggerKey, trigger);
+                log.info("添加定时任务：" + job.getJobgroup() + "_" + job.getName());
+            } else {
+                // Trigger已存在，那么更新相应的定时设置
+                CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCron());
+
+                // 按新的cronExpression表达式重新构建trigger
+                trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
+
+                // 按新的trigger重新设置job执行
+                scheduler.rescheduleJob(triggerKey, trigger);
+            }
+        } catch (SchedulerException e) {
+            log.error("定时任务加载异常"+e.toString());
+            e.printStackTrace();
         }
     }
 

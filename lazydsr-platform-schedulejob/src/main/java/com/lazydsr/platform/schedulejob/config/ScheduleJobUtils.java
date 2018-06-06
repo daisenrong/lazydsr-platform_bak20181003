@@ -1,6 +1,6 @@
-package com.lazydsr.platform.config.schedule;
+package com.lazydsr.platform.schedulejob.config;
 
-import com.lazydsr.platform.entity.ScheduleJob;
+import com.lazydsr.platform.schedulejob.bean.ScheduleJob;
 import com.lazydsr.util.time.UtilDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;

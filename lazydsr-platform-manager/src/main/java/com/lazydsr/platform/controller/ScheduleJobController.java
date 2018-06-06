@@ -2,12 +2,12 @@ package com.lazydsr.platform.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.lazydsr.platform.entity.Menu;
 import com.lazydsr.platform.entity.ScheduleJob;
 import com.lazydsr.platform.service.ScheduleJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -33,7 +33,7 @@ public class ScheduleJobController {
 
     @RequestMapping("json/findAll/page")
     @ResponseBody
-    public Map findAllJsonPage(int page, int limit){
+    public Map findAllJsonPage(int page, int limit) {
         Map map = new HashMap();
         //List<ScheduleJob> all = scheduleJobService.findAll();
         PageHelper.startPage(page, limit);
@@ -50,5 +50,12 @@ public class ScheduleJobController {
         //map.put("data", menus.getContent());
         return map;
 
+    }
+
+    @PostMapping
+    @ResponseBody
+    public ScheduleJob add(ScheduleJob scheduleJob) {
+        ScheduleJob job = scheduleJobService.add(scheduleJob);
+        return job;
     }
 }

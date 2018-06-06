@@ -66,7 +66,9 @@ function openViewBig(url, title, callback) {
             return;
         },
         end: function () {
-            callback();
+            if (callback) {
+                callback();
+            }
         }
     });
 

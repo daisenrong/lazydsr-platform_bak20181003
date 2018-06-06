@@ -1,10 +1,9 @@
 package com.lazydsr.platform.controller;
 
 import com.lazydsr.platform.config.cache.redis.RedisService;
-import com.lazydsr.platform.config.schedule.ScheduleConfiguration;
 import com.lazydsr.platform.entity.ScheduleJob;
 import com.lazydsr.platform.entity.User;
-import com.lazydsr.platform.service.ScheduleJobService;
+import com.lazydsr.platform.schedulejob.config.ScheduleJobConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class TestController {
     @Autowired
     private RedisService redisService;
     @Autowired
-    private ScheduleConfiguration scheduleConfiguration;
+    private ScheduleJobConfiguration scheduleJobConfiguration;
 
     @RequestMapping("/{string}")
     public String test(@PathVariable String string) {
@@ -42,13 +41,13 @@ public class TestController {
         return s;
     }
 
-    @RequestMapping("scheduleJobs")
-    public List<ScheduleJob> getScheduleJobs() {
-        try {
-            return scheduleConfiguration.getAllJob();
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    //@RequestMapping("scheduleJobs")
+    //public List<ScheduleJob> getScheduleJobs() {
+    //    try {
+    //        return scheduleJobConfiguration.getAllJob();
+    //    } catch (SchedulerException e) {
+    //        e.printStackTrace();
+    //    }
+    //    return null;
+    //}
 }
