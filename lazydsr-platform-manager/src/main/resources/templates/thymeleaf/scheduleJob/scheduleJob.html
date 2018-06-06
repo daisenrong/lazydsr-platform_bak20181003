@@ -85,7 +85,14 @@
                     {field: 'id', title: 'ID', width: 80, sort: true},
                     {field: 'name', title: '名称', width: 100},
                     // {field: 'enName', title: '英文名称', width: 80, sort: true},
-                    {field: 'parentId', title: '父菜单', width: 100},
+                    {field: 'jobGroup', title: '分组', width: 100},
+                    {field: 'classpath', title: '类', width: 100},
+                    {field: 'method', title: '方法', width: 100},
+                    {
+                        field: 'concurrent', title: '并发执行', width: 80, sort: true, templet: function (d) {
+                            return getIsOrNo(d.publics);
+                        }, unresize: true
+                    },
                     {
                         field: 'icon', title: '图标', width: 80, align: 'center', templet: function (d) {
                             return '<i class="' + d.icon + '"></i>';
