@@ -23,8 +23,8 @@ import java.util.Set;
  * Version: 0.1
  * Info: 定时任务配置类
  */
-//@Configuration
-//@EnableScheduling
+@Configuration
+@EnableScheduling
 @Slf4j
 public class ScheduleJobConfiguration {
 

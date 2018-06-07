@@ -2,10 +2,8 @@ package com.lazydsr.platform.service.impl;
 
 import com.lazydsr.platform.entity.ScheduleJob;
 import com.lazydsr.platform.mapper.ScheduleJobMapper;
-import com.lazydsr.platform.schedulejob.config.ScheduleJobConfiguration;
 import com.lazydsr.platform.service.ScheduleJobService;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.SchedulerException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,17 +31,17 @@ public class ScheduleJobServiceImpl implements ScheduleJobService {
     private ScheduleJobMapper scheduleJobMapper;
     @Autowired
     private RedisTemplate redisTemplate;
-    @Autowired
-    private ScheduleJobConfiguration scheduleJobConfiguration;
+    //@Autowired
+    //private ScheduleJobConfiguration scheduleJobConfiguration;
 
     @Override
     public ScheduleJob add(ScheduleJob scheduleJob) {
         int insert = scheduleJobMapper.insert(scheduleJob);
         ScheduleJob job = scheduleJobMapper.selectByPrimaryKey(scheduleJob.getId());
         //初始化定时任务
-        com.lazydsr.platform.schedulejob.bean.ScheduleJob job1 = new com.lazydsr.platform.schedulejob.bean.ScheduleJob();
-        BeanUtils.copyProperties(job, job1);
-        scheduleJobConfiguration.addJob(job1);
+        //com.lazydsr.platform.schedulejob.bean.ScheduleJob job1 = new com.lazydsr.platform.schedulejob.bean.ScheduleJob();
+        //BeanUtils.copyProperties(job, job1);
+        //scheduleJobConfiguration.addJob(job1);
 
         return job;
     }

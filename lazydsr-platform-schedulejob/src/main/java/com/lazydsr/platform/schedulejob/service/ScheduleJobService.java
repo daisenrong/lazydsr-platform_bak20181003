@@ -1,6 +1,7 @@
 package com.lazydsr.platform.schedulejob.service;
 
 import com.lazydsr.platform.schedulejob.bean.ScheduleJob;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Version: 0.1
  * Info: @TODO:...
  */
+
 public interface ScheduleJobService {
-    public List<ScheduleJob> findAll();
+    public List<ScheduleJob> findAll() throws Exception;
 }

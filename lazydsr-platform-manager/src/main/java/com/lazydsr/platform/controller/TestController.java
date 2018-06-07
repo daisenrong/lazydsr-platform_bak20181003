@@ -3,9 +3,7 @@ package com.lazydsr.platform.controller;
 import com.lazydsr.platform.config.cache.redis.RedisService;
 import com.lazydsr.platform.entity.ScheduleJob;
 import com.lazydsr.platform.entity.User;
-import com.lazydsr.platform.schedulejob.config.ScheduleJobConfiguration;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +25,6 @@ import java.util.List;
 public class TestController {
     @Autowired
     private RedisService redisService;
-    @Autowired
-    private ScheduleJobConfiguration scheduleJobConfiguration;
 
     @RequestMapping("/{string}")
     public String test(@PathVariable String string) {

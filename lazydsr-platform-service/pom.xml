@@ -22,10 +22,10 @@
             <groupId>com.lazydsr.platform</groupId>
             <artifactId>lazydsr-platform-dao</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.lazydsr.platform</groupId>
-            <artifactId>lazydsr-platform-schedulejob</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.lazydsr.platform</groupId>-->
+            <!--<artifactId>lazydsr-platform-schedulejob</artifactId>-->
+        <!--</dependency>-->
         <!--子模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
