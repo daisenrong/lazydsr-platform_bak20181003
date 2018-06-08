@@ -185,9 +185,9 @@ public class MenuController {
     @DeleteMapping
     @ResponseBody
     public Map deleteMultipleById(@RequestBody List<String> ids) {
-        ids.stream().forEach(id -> {
-            System.out.println(id);
-        });
+        //ids.stream().forEach(id -> {
+        //    System.out.println(id);
+        //});
         Map<String, String> map = new HashMap<>();
         if (ids.size() == 0) {
             map.put("status", "1");

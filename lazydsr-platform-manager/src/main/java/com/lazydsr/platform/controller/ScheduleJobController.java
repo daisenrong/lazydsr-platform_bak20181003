@@ -2,14 +2,15 @@ package com.lazydsr.platform.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.lazydsr.commons.result.HttpStatus;
+import com.lazydsr.commons.result.ResultBody;
+import com.lazydsr.platform.entity.Menu;
 import com.lazydsr.platform.entity.ScheduleJob;
 import com.lazydsr.platform.service.ScheduleJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,5 +58,24 @@ public class ScheduleJobController {
     public ScheduleJob add(ScheduleJob scheduleJob) {
         ScheduleJob job = scheduleJobService.add(scheduleJob);
         return job;
+    }
+
+    @GetMapping("/{type}/{id}")
+    public String findByTypeAndId(@PathVariable("type") String type, @PathVariable("id") String id, Map map) {
+        String url = "";
+        if (type != null && type.equalsIgnoreCase("edit")) {
+            url = "scheduleJob/edit";
+        } else {
+            url = "scheduleJob/view";
+        }
+        ScheduleJob scheduleJob = scheduleJobService.findById(id);
+        map.put("data", scheduleJob);
+        return url;
+    }
+    @PutMapping
+    @ResponseBody
+    public Object updateById(ScheduleJob job){
+        ScheduleJob scheduleJob = scheduleJobService.update(job);
+        return new ResultBody(HttpStatus.OK);
     }
 }

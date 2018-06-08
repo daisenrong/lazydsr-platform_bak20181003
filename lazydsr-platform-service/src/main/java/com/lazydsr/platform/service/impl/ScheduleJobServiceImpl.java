@@ -54,12 +54,14 @@ public class ScheduleJobServiceImpl implements ScheduleJobService {
 
     @Override
     public ScheduleJob update(ScheduleJob scheduleJob) {
-        return null;
+        int i = scheduleJobMapper.updateByPrimaryKey(scheduleJob);
+
+        return scheduleJobMapper.selectByPrimaryKey(scheduleJob.getId());
     }
 
     @Override
     public ScheduleJob findById(String id) {
-        return null;
+        return scheduleJobMapper.selectByPrimaryKey(id);
     }
 
     @Override
