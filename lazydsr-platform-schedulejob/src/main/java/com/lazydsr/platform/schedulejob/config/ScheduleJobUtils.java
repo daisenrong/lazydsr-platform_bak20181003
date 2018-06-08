@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 
 /**
  * ScheduleJobUtils
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.config.scheduleJob
  * Created by Lazy on 2018/5/16 14:40
  * Version: 0.1

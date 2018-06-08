@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * MenuService
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.service
  * Created by Lazy on 2018/3/19 15:58
  * Version: 0.1

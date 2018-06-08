@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * TestController
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.controller
  * Created by Lazy on 2018/5/19 15:38
  * Version: 0.1

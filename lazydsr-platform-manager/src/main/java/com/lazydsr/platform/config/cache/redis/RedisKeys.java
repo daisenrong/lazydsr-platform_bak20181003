@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * RedisKeys
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.config.cache.redis
  * Created by Lazy on 2018/5/23 20:20
  * Version: 0.1

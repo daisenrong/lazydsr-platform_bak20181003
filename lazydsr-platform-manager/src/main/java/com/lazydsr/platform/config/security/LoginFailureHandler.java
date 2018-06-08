@@ -19,7 +19,7 @@ import java.io.IOException;
 
 /**
  * LoginFailureHandler
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.config.security
  * Created by Lazy on 2018/3/19 1:16
  * Version: 0.1

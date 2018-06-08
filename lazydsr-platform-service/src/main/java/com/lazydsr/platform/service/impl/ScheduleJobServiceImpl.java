@@ -2,6 +2,7 @@ package com.lazydsr.platform.service.impl;
 
 import com.lazydsr.platform.entity.ScheduleJob;
 import com.lazydsr.platform.mapper.ScheduleJobMapper;
+import com.lazydsr.platform.schedulejob.config.ScheduleJobConfiguration;
 import com.lazydsr.platform.service.ScheduleJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -17,7 +18,7 @@ import java.util.Set;
 
 /**
  * ScheduleJobServiceImpl
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.service.impl
  * Created by Lazy on 2018/5/13 21:23
  * Version: 0.1
@@ -31,17 +32,17 @@ public class ScheduleJobServiceImpl implements ScheduleJobService {
     private ScheduleJobMapper scheduleJobMapper;
     @Autowired
     private RedisTemplate redisTemplate;
-    //@Autowired
-    //private ScheduleJobConfiguration scheduleJobConfiguration;
+    @Autowired
+    private ScheduleJobConfiguration scheduleJobConfiguration;
 
     @Override
     public ScheduleJob add(ScheduleJob scheduleJob) {
         int insert = scheduleJobMapper.insert(scheduleJob);
         ScheduleJob job = scheduleJobMapper.selectByPrimaryKey(scheduleJob.getId());
         //初始化定时任务
-        //com.lazydsr.platform.schedulejob.bean.ScheduleJob job1 = new com.lazydsr.platform.schedulejob.bean.ScheduleJob();
-        //BeanUtils.copyProperties(job, job1);
-        //scheduleJobConfiguration.addJob(job1);
+        com.lazydsr.platform.schedulejob.bean.ScheduleJob job1 = new com.lazydsr.platform.schedulejob.bean.ScheduleJob();
+        BeanUtils.copyProperties(job, job1);
+        scheduleJobConfiguration.addJob(job1);
 
         return job;
     }
@@ -63,7 +64,20 @@ public class ScheduleJobServiceImpl implements ScheduleJobService {
 
     @Override
     public List<ScheduleJob> findAllNormal() {
-        return null;
+        String key = prefix + "::" + Thread.currentThread().getStackTrace()[1].getMethodName();
+        List<ScheduleJob> scheduleJobList = null;
+        SetOperations opsForSet = redisTemplate.opsForSet();
+        Set<ScheduleJob> scheduleJobSet = opsForSet.members(key);
+        if (CollectionUtils.isEmpty(scheduleJobSet)) {
+            scheduleJobList = scheduleJobMapper.selectAll();
+            scheduleJobSet.addAll(scheduleJobList);
+            if (!CollectionUtils.isEmpty(scheduleJobList)) {
+                scheduleJobSet.stream().forEach(scheduleJob -> opsForSet.add(key, scheduleJob));
+            }
+        }
+        scheduleJobList = new ArrayList<>();
+        scheduleJobList.addAll(scheduleJobSet);
+        return scheduleJobList;
     }
 
     @Override

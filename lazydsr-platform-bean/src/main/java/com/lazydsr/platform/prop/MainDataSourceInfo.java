@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * MainDataSourceInfo
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.domain
  * Created by Lazy on 2018/3/18 3:25
  * Version: 0.1

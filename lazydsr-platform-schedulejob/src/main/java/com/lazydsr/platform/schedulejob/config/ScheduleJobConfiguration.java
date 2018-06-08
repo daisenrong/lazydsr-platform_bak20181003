@@ -2,7 +2,6 @@ package com.lazydsr.platform.schedulejob.config;
 
 
 import com.lazydsr.platform.schedulejob.bean.ScheduleJob;
-import com.lazydsr.platform.schedulejob.service.ScheduleJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -17,7 +16,7 @@ import java.util.Set;
 
 /**
  * QuartzConfigration
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.config.scheduleJob
  * Created by Lazy on 2018/5/14 01:44
  * Version: 0.1
@@ -36,18 +35,15 @@ public class ScheduleJobConfiguration {
 
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
-    @Autowired
-    private ScheduleJobService scheduleJobService;
 
 
-    public void init() throws Exception {
+    public void init(List<ScheduleJob> scheduleJobs) throws Exception {
 
         //Scheduler scheduler = schedulerFactoryBean.getScheduler();
 
         // 这里从数据库中获取任务信息数据
-        List<ScheduleJob> jobList = scheduleJobService.findAll();
-        log.error("scheduleList" + jobList);
-        for (ScheduleJob job : jobList) {
+        log.info("scheduleList" + scheduleJobs);
+        for (ScheduleJob job : scheduleJobs) {
             addJob(job);
         }
     }

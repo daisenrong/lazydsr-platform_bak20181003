@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * SingleBrowseController
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.controller.commons.browse
  * Created by Lazy on 2018/3/30 16:32
  * Version: 0.1

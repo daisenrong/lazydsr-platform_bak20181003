@@ -2,7 +2,7 @@ package com.lazydsr.platform.config.datasource;
 
 /**
  * DatasourceUtil
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.config.datasource
  * Created by Lazy on 2018/3/9 23:42
  * Version: 0.1
@@ -11,7 +11,7 @@ package com.lazydsr.platform.config.datasource;
 public class DataSourceUtil {
 
     public static String getConnectUrl(String dbType, String address, String prot, String dbname, String enCoding, boolean useSSL) {
-        //jdbc:mysql://localhost:3306/lazydsr-web-template?useUnicode=true&characterEncoding=utf-8&useSSL=false
+        //jdbc:mysql://localhost:3306/lazydsr-platform?useUnicode=true&characterEncoding=utf-8&useSSL=false
         StringBuffer connectUrl = new StringBuffer();
         if (dbType.equalsIgnoreCase(DatabaseTypeEnum.MYSQL.getDbType())) {
             connectUrl.append("jdbc:mysql://")

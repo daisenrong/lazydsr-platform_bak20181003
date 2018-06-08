@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Test001
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform
  * Created by Lazy on 2018/3/14 22:18
  * Version: 0.1

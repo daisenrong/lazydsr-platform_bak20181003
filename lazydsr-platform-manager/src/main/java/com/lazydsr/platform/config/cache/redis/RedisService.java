@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * UtilRedis
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.util
  * Created by Lazy on 2018/5/19 17:34
  * Version: 0.1

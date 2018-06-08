@@ -23,7 +23,7 @@ import java.io.IOException;
 
 /**
  * WebSecurityConfiguration
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.config.security
  * Created by Lazy on 2018/3/18 15:44
  * Version: 0.1

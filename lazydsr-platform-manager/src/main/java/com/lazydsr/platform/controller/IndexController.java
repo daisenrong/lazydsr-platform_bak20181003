@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * home
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.controller
  * Created by Lazy on 2018/3/12 23:48
  * Version: 0.1

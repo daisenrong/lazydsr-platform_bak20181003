@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * ScheduleJob
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.entity
  * Created by Lazy on 2018/5/13 20:21
  * Version: 0.1
@@ -15,10 +15,13 @@ import lombok.Data;
 
 @Data
 public class ScheduleJob {
-
+    //正常
     public static final String STATUS_RUNNING = "0";
+    //禁用
     public static final String STATUS_NOT_RUNNING = "1";
+    //并发
     public static final String CONCURRENT_IS = "0";
+    //非并发
     public static final String CONCURRENT_NOT = "1";
 
 
@@ -26,6 +29,7 @@ public class ScheduleJob {
 
     private String name;
 
+    
     private String jobgroup="default";
 
     private String classpath;

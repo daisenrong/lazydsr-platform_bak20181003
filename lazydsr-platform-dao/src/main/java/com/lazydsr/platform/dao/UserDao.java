@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * UserJdbc
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.jdbc
  * Created by Lazy on 2018/3/7 16:26
  * Version: 0.1

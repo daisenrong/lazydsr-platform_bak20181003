@@ -2,7 +2,7 @@ package com.lazydsr.platform.config.datasource;
 
 /**
  * DataSourceContextHolder
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.config.datasource
  * Created by Lazy on 2018/3/10 19:48
  * Version: 0.1

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 /**
  * Browse
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.entity
  * Created by Lazy on 2018/4/23 22:21
  * Version: 0.1

@@ -1,6 +1,6 @@
 /**
  * home
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: static.js.pages.index
  * Created by Lazy on 2018/3/13 22:43
  * Version: 0.1

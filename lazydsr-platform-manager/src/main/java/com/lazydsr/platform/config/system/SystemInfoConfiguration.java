@@ -15,7 +15,7 @@ import java.util.Properties;
 
 /**
  * SystemInfoConfiguration
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.config.system
  * Created by Lazy on 2018/3/15 0:10
  * Version: 0.1

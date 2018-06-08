@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * SpringContextUtil
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.util
  * Created by Lazy on 2018/3/10 21:10
  * Version: 0.1

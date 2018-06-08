@@ -2,7 +2,7 @@ package com.lazydsr.platform.base;
 
 /**
  * STATICVALUE
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.base
  * Created by Lazy on 2018/3/8 22:49
  * Version: 0.1

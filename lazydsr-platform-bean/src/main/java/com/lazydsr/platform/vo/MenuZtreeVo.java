@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * MenuVo
- * PROJECT_NAME: lazydsr-web-template
+ * PROJECT_NAME: lazydsr-platform
  * PACKAGE_NAME: com.lazydsr.platform.vo
  * Created by Lazy on 2018/5/12 18:16
  * Version: 0.1
