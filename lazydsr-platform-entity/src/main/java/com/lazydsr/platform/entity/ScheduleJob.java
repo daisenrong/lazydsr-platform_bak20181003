@@ -15,7 +15,7 @@ import javax.persistence.Table;
  * Version: 0.1
  * Info: 定时任务类
  */
-@Table(name = "sys_scheduleJob")
+@Table(name = "sys_schedule_job")
 @Data
 public class ScheduleJob {
 

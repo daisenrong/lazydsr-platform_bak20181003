@@ -182,24 +182,24 @@ public class MenuController {
         return map;
     }
 
-    @DeleteMapping
-    @ResponseBody
-    public Map deleteMultipleById(@RequestBody List<String> ids) {
-        //ids.stream().forEach(id -> {
-        //    System.out.println(id);
-        //});
-        Map<String, String> map = new HashMap<>();
-        if (ids.size() == 0) {
-            map.put("status", "1");
-            return map;
-        }
-        int count = menuService.deleteMultipleById(ids);
-
-        if (count > 0) {
-            map.put("status", "0");
-        } else {
-            map.put("status", "1");
-        }
-        return map;
-    }
+    //@DeleteMapping
+    //@ResponseBody
+    //public Map deleteMultipleById(@RequestBody List<String> ids) {
+    //    //ids.stream().forEach(id -> {
+    //    //    System.out.println(id);
+    //    //});
+    //    Map<String, String> map = new HashMap<>();
+    //    if (ids.size() == 0) {
+    //        map.put("status", "1");
+    //        return map;
+    //    }
+    //    int count = menuService.deleteMultipleById(ids);
+    //
+    //    if (count > 0) {
+    //        map.put("status", "0");
+    //    } else {
+    //        map.put("status", "1");
+    //    }
+    //    return map;
+    //}
 }

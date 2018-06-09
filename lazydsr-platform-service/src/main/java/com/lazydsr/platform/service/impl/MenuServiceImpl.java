@@ -6,16 +6,15 @@ import com.lazydsr.platform.service.MenuService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * MenuServiceImpl
@@ -39,42 +38,96 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Menu add(Menu menu) {
-        int count = menuMapper.insert(menu);
-        return menuMapper.selectByPrimaryKey(menu.getId());
 
+        int count = menuMapper.insert(menu);
+        menu = menuMapper.selectByPrimaryKey(menu.getId());
+        //操作缓存
+        ValueOperations opsForValue = redisTemplate.opsForValue();
+        String key = prefix + "::" + menu.getId();
+        if (count > 0) {
+            opsForValue.set(key, menu, 60 * 60, TimeUnit.SECONDS);
+            redisTemplate.delete(prefix + "::findAllNormal");
+            redisTemplate.delete(prefix + "::findAll");
+        }
+        return menu;
     }
 
     @Override
     public int delete(String id) {
-        return menuMapper.deleteByPrimaryKey(id);
+        int count = menuMapper.deleteByPrimaryKey(id);
+        if (count > 0) {
+            redisTemplate.delete(prefix + "::" + id);
+            redisTemplate.delete(prefix + "::findAllNormal");
+            redisTemplate.delete(prefix + "::findAll");
+        }
+        return count;
     }
 
 
     @Override
-    @CachePut(key = "#menu.id")
     public Menu update(Menu menu) {
+        String key = prefix + "::" + menu.getId();
+        ValueOperations opsForValue = redisTemplate.opsForValue();
         int count = menuMapper.updateByPrimaryKey(menu);
         if (count > 0) {
-            return menuMapper.selectByPrimaryKey(menu.getId());
-        } else {
-            return null;
+            menu = menuMapper.selectByPrimaryKey(menu.getId());
+            opsForValue.set(key, menu, 60 * 60, TimeUnit.SECONDS);
+            redisTemplate.delete(prefix + "::findAllNormal");
+            redisTemplate.delete(prefix + "::findAll");
         }
+        return menu;
     }
 
     @Override
-    @Cacheable(key = "#id")
     public Menu findById(String id) {
-        return menuMapper.selectByPrimaryKey(id);
+        String key = prefix + "::" + id;
+        ValueOperations opsForValue = redisTemplate.opsForValue();
+        Menu menu = (Menu) opsForValue.get(key);
+        if (menu == null) {
+            menu = menuMapper.selectByPrimaryKey(id);
+            if (menu != null) {
+                opsForValue.set(key, menu, 60 * 60, TimeUnit.SECONDS);
+            }
+        }
+        return menu;
     }
 
     @Override
-    @Cacheable
     public List<Menu> findAll() {
-        return menuMapper.selectAll();
+        String key = prefix + "::" + Thread.currentThread().getStackTrace()[1].getMethodName();
+        ListOperations opsForList = redisTemplate.opsForList();
+        List<Menu> list = opsForList.range(key, 0, -1);
+        if (CollectionUtils.isEmpty(list)) {
+            log.warn("缓存为空，查询数据库，添加缓存");
+            list = menuMapper.selectAll();
+
+            if (!CollectionUtils.isEmpty(list)) {
+                opsForList.rightPushAll(key, list);
+                redisTemplate.expire(key, 60 * 60, TimeUnit.SECONDS);
+            }
+        }
+        return list;
     }
 
     @Override
-    @CacheEvict
+    public List<Menu> findAllNormal() {
+        String key = prefix + "::" + Thread.currentThread().getStackTrace()[1].getMethodName();
+        ListOperations opsForList = redisTemplate.opsForList();
+        List<Menu> list = opsForList.range(key, 0, -1);
+
+        if (CollectionUtils.isEmpty(list)) {
+            log.warn("缓存为空，查询数据库，添加缓存");
+            list = menuMapper.selectAllNormal();
+
+            if (!CollectionUtils.isEmpty(list)) {
+                opsForList.rightPushAll(key, list);
+                redisTemplate.expire(key, 60 * 60, TimeUnit.SECONDS);
+            }
+        }
+        return list;
+    }
+
+    @Override
     public int deleteMultipleById(List<String> ids) {
         //ArrayList<String> ids = new ArrayList<>();
         //menus.stream().forEach(menu -> {
@@ -82,53 +135,20 @@ public class MenuServiceImpl implements MenuService {
         //});
         Example example = new Example(Menu.class);
         example.createCriteria().andIn("id", ids);
-        return menuMapper.deleteByExample(example);
-    }
-
-    @Override
-    public List<Menu> findAllNormal() {
-        String key=prefix+"::"+Thread.currentThread().getStackTrace()[1].getMethodName();
-        ListOperations opsForList = redisTemplate.opsForList();
-        //List<Menu> list = redisService.getList(prefix + "::findAllNormal");
-        List<Menu> list = opsForList.range(key,0,-1);
-        //log.info("缓存" + list==null?"null":list.toString());
-
-        if (CollectionUtils.isEmpty(list)) {
-            log.warn("缓存为空，查询数据库，添加缓存");
-            list = menuMapper.selectAllNormal();
-            log.info("数据库" + list.toString());
-            //if (list != null)
-                //redisService.getRedisTemplate().opsForList().leftPushAll(prefix + "::findAllNormal",list);
-                //redisService.setListAll(prefix + "::findAllNormal", list);
-            if (!CollectionUtils.isEmpty(list)){
-                opsForList.rightPushAll(key,list);
-            }
+        int count = menuMapper.deleteByExample(example);
+        if (count > 0) {
+            ids.stream().forEach(key -> redisTemplate.delete(key));
+            redisTemplate.delete(prefix + "::findAllNormal");
+            redisTemplate.delete(prefix + "::findAll");
         }
-        return list;
+        return count;
     }
 
-    //@Override
-    //public PageInfo<Menu> findAllNormal(int page, int size) {
-    //    PageHelper.startPage(page, size);
-    //    List<Menu> menus = menuMapper.selectAllNormal();
-    //    PageInfo<Menu> pageInfo = new PageInfo<>(menus);
-    //
-    //    return pageInfo;
-    //}
 
     @Override
     public List<Menu> findByUserId(String userId) {
         return null;
     }
-
-    //@Override
-    //public PageInfo<Menu> findAll(int page, int size) {
-    //    PageHelper.startPage(page, size);
-    //    List<Menu> menus = menuMapper.selectAll();
-    //    PageInfo<Menu> pageInfo = new PageInfo<>(menus);
-    //
-    //    return pageInfo;
-    //}
 
 
 }

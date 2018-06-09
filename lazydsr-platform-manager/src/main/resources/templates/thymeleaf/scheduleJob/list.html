@@ -131,10 +131,10 @@
                         dataType: "json",
                         // data: JSON.stringify(arr),
                         success: function (d) {
-                            if (d.status == "0") {
+                            if (d.code = 200) {
                                 layer.msg("删除成功");
                                 obj.del();
-                                table.reload("menu", {})
+                                table.reload("laytable", {})
                             } else {
                                 layer.msg("删除失败，请联系管理员或重试。");
                             }
@@ -156,33 +156,39 @@
                     layer.msg("请选中数据后在点击按钮");
                     return;
                 }
-                var ids = [];
+                var list = {};
                 for (var i = 0; i < data.length; i++) {
-                    ids[i] = data[i].id;
+                    list["ids["+i+"]"] = data[i].id;
                 }
-                var params = {
-                    ids: ids
-                };
+                console.log(list);
+                // var params = {
+                //     ids: ids
+                // };
                 $.ajax({
                     type: 'delete',
-                    url: ctx + '/menu',
-                    contentType: 'application/json',
-                    dataType: "json",
-                    data: ids,
-                    traditional: true,
+                    url: ctx + '/scheduleJob/menu2',
+                    // contentType: 'application/json',
+                    // dataType: "json",
+                    data: list,
+                    // traditional: true,
+                    async:false,
                     // data: {ids: JSON.stringify(ids)},
                     success: function (d) {
-                        if (d.status == "0") {
-                            layer.msg("删除成功");
-                            // obj.del();
-                            table.reload("laytable", {})
-                        } else {
+                        if (!d) {
                             layer.msg("删除失败，请联系管理员或重试。");
+                        } else {
+                            if (d.code == 200) {
+                                layer.msg("删除成功");
+                                // obj.del();
+                                table.reload("laytable", {})
+                            } else {
+                                layer.msg("删除失败，请联系管理员或重试。");
+                            }
                         }
                     }
                 });
 
-                layer.alert(JSON.stringify({'ids': ids}));
+                // layer.alert(ids);
             }
             , getCheckLength: function () { //获取选中数目
                 var checkStatus = table.checkStatus('laytable')

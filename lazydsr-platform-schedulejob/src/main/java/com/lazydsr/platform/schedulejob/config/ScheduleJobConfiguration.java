@@ -37,7 +37,7 @@ public class ScheduleJobConfiguration {
     private SchedulerFactoryBean schedulerFactoryBean;
 
 
-    public void init(List<ScheduleJob> scheduleJobs) throws Exception {
+    public void init(List<ScheduleJob> scheduleJobs) {
 
         //Scheduler scheduler = schedulerFactoryBean.getScheduler();
 
@@ -97,7 +97,7 @@ public class ScheduleJobConfiguration {
                 scheduler.rescheduleJob(triggerKey, trigger);
             }
         } catch (SchedulerException e) {
-            log.error("定时任务加载异常"+e.toString());
+            log.error("定时任务加载异常" + e.toString());
             e.printStackTrace();
         }
     }
@@ -109,15 +109,55 @@ public class ScheduleJobConfiguration {
      * @return
      * @throws SchedulerException
      */
-    public List<ScheduleJob> getAllJob() throws SchedulerException {
-        Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        GroupMatcher<JobKey> matcher = GroupMatcher.anyJobGroup();
-        Set<JobKey> jobKeys = scheduler.getJobKeys(matcher);
+    public List<ScheduleJob> getAllJob() {
         List<ScheduleJob> jobList = new ArrayList<ScheduleJob>();
-        for (JobKey jobKey : jobKeys) {
-            List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
-            for (Trigger trigger : triggers) {
+        try {
+            Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            GroupMatcher<JobKey> matcher = GroupMatcher.anyJobGroup();
+            Set<JobKey> jobKeys = null;
+            jobKeys = scheduler.getJobKeys(matcher);
+            for (JobKey jobKey : jobKeys) {
+                List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
+                for (Trigger trigger : triggers) {
+                    ScheduleJob job = new ScheduleJob();
+                    job.setName(jobKey.getName());
+                    job.setJobgroup(jobKey.getGroup());
+                    job.setDescription("触发器:" + trigger.getKey());
+                    Trigger.TriggerState triggerState = scheduler.getTriggerState(trigger.getKey());
+                    job.setJobstatus(triggerState.name());
+                    if (trigger instanceof CronTrigger) {
+                        CronTrigger cronTrigger = (CronTrigger) trigger;
+                        String cronExpression = cronTrigger.getCronExpression();
+                        job.setCron(cronExpression);
+                    }
+                    jobList.add(job);
+                }
+            }
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+        return jobList;
+    }
+
+    /**
+     * 所有正在运行的job
+     *
+     * @return
+     * @throws SchedulerException
+     */
+    public List<ScheduleJob> getRunningJob() {
+        List<ScheduleJob> jobList = null;
+        try {
+            Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            List<JobExecutionContext> executingJobs = null;
+            executingJobs = scheduler.getCurrentlyExecutingJobs();
+            jobList = new ArrayList<ScheduleJob>(executingJobs.size());
+
+            for (JobExecutionContext executingJob : executingJobs) {
                 ScheduleJob job = new ScheduleJob();
+                JobDetail jobDetail = executingJob.getJobDetail();
+                JobKey jobKey = jobDetail.getKey();
+                Trigger trigger = executingJob.getTrigger();
                 job.setName(jobKey.getName());
                 job.setJobgroup(jobKey.getGroup());
                 job.setDescription("触发器:" + trigger.getKey());
@@ -130,36 +170,8 @@ public class ScheduleJobConfiguration {
                 }
                 jobList.add(job);
             }
-        }
-        return jobList;
-    }
-
-    /**
-     * 所有正在运行的job
-     *
-     * @return
-     * @throws SchedulerException
-     */
-    public List<ScheduleJob> getRunningJob() throws SchedulerException {
-        Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        List<JobExecutionContext> executingJobs = scheduler.getCurrentlyExecutingJobs();
-        List<ScheduleJob> jobList = new ArrayList<ScheduleJob>(executingJobs.size());
-        for (JobExecutionContext executingJob : executingJobs) {
-            ScheduleJob job = new ScheduleJob();
-            JobDetail jobDetail = executingJob.getJobDetail();
-            JobKey jobKey = jobDetail.getKey();
-            Trigger trigger = executingJob.getTrigger();
-            job.setName(jobKey.getName());
-            job.setJobgroup(jobKey.getGroup());
-            job.setDescription("触发器:" + trigger.getKey());
-            Trigger.TriggerState triggerState = scheduler.getTriggerState(trigger.getKey());
-            job.setJobstatus(triggerState.name());
-            if (trigger instanceof CronTrigger) {
-                CronTrigger cronTrigger = (CronTrigger) trigger;
-                String cronExpression = cronTrigger.getCronExpression();
-                job.setCron(cronExpression);
-            }
-            jobList.add(job);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
         }
         return jobList;
     }
@@ -182,10 +194,15 @@ public class ScheduleJobConfiguration {
      * @param scheduleJob
      * @throws SchedulerException
      */
-    public void resumeJob(ScheduleJob scheduleJob) throws SchedulerException {
-        Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        JobKey jobKey = JobKey.jobKey(scheduleJob.getName(), scheduleJob.getJobgroup());
-        scheduler.resumeJob(jobKey);
+    public void resumeJob(ScheduleJob scheduleJob) {
+
+        try {
+            Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            JobKey jobKey = JobKey.jobKey(scheduleJob.getName(), scheduleJob.getJobgroup());
+            scheduler.resumeJob(jobKey);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -194,10 +211,15 @@ public class ScheduleJobConfiguration {
      * @param scheduleJob
      * @throws SchedulerException
      */
-    public void deleteJob(ScheduleJob scheduleJob) throws SchedulerException {
-        Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        JobKey jobKey = JobKey.jobKey(scheduleJob.getName(), scheduleJob.getJobgroup());
-        scheduler.deleteJob(jobKey);
+    public void deleteJob(ScheduleJob scheduleJob) {
+
+        try {
+            Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            JobKey jobKey = JobKey.jobKey(scheduleJob.getName(), scheduleJob.getJobgroup());
+            scheduler.deleteJob(jobKey);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -207,10 +229,15 @@ public class ScheduleJobConfiguration {
      * @param scheduleJob
      * @throws SchedulerException
      */
-    public void runJobNow(ScheduleJob scheduleJob) throws SchedulerException {
-        Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        JobKey jobKey = JobKey.jobKey(scheduleJob.getName(), scheduleJob.getJobgroup());
-        scheduler.triggerJob(jobKey);
+    public void runJobNow(ScheduleJob scheduleJob) {
+
+        try {
+            Scheduler scheduler = schedulerFactoryBean.getScheduler();
+            JobKey jobKey = JobKey.jobKey(scheduleJob.getName(), scheduleJob.getJobgroup());
+            scheduler.triggerJob(jobKey);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class ScheduleJobController {
         Map map = new HashMap();
         //List<ScheduleJob> all = scheduleJobService.findAll();
         PageHelper.startPage(page, limit);
-        List<ScheduleJob> scheduleJobs = scheduleJobService.findAll();
+        List<ScheduleJob> scheduleJobs = scheduleJobService.findAllNormal();
         PageInfo<ScheduleJob> pageInfo = new PageInfo<>(scheduleJobs);
 
         map.put("code", 0);
@@ -72,10 +73,40 @@ public class ScheduleJobController {
         map.put("data", scheduleJob);
         return url;
     }
+
     @PutMapping
     @ResponseBody
-    public Object updateById(ScheduleJob job){
+    public Object updateById(ScheduleJob job) {
         ScheduleJob scheduleJob = scheduleJobService.update(job);
-        return new ResultBody(HttpStatus.OK);
+        if (scheduleJob != null)
+            return ResultBody.success();
+        else
+            return ResultBody.error(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public Object deleteById(@PathVariable("id") String id) {
+        int count = scheduleJobService.delete(id);
+
+        if (count > 0)
+            return ResultBody.success();
+        else
+            return ResultBody.error(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("menu2")
+    @ResponseBody
+    public Object deleteMultipleById( Object[] ids) {
+
+        log.error(ids.toString());
+
+        return null;
+        //int count = scheduleJobService.deleteMultipleById(ids);
+        //if (count>0){
+        //    return ResultBody.success();
+        //}else {
+        //    return ResultBody.error();
+        //}
     }
 }

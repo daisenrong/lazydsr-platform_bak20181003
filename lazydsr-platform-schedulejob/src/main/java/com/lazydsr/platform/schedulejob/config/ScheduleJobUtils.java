@@ -60,9 +60,9 @@ public class ScheduleJobUtils {
         }
         if (method != null) {
             try {
-                log.info("定时任务：{}执行开始，执行方法：{}，开始时间：{}", scheduleJob.getClasspath(), scheduleJob.getMethod(), UtilDateTime.getCurrDateTime());
+                log.info("定时任务：{}执行开始，执行路径{}，执行方法：{}，开始时间：{}", scheduleJob.getName() + "_" + scheduleJob.getJobgroup(), scheduleJob.getClasspath(), scheduleJob.getMethod(), UtilDateTime.getCurrDateTime());
                 method.invoke(object);
-                log.info("定时任务：{}执行开始，执行方法：{}，结束时间：{}", scheduleJob.getClasspath(), scheduleJob.getMethod(), UtilDateTime.getCurrDateTime());
+                log.info("定时任务：{}执行开始，执行路径{}，执行方法：{}，结束时间：{}", scheduleJob.getName() + "_" + scheduleJob.getJobgroup(), scheduleJob.getClasspath(), scheduleJob.getMethod(), UtilDateTime.getCurrDateTime());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
                 return "任务名称 = [" + scheduleJob.getName() + "]---------------" + e.toString();

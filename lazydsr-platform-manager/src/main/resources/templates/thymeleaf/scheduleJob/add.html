@@ -109,6 +109,7 @@
             data: $('#form').serializeArray(),
             success: function (data) {
                 parent.layer.closeAll();
+                parent.table.reload("laytable", {});
                 parent.layer.msg("添加成功");
             },
             dataType: "json"
