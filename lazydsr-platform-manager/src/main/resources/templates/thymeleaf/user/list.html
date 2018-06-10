@@ -10,8 +10,8 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            定时任务管理
-            <small>定时任务列表</small>
+            用户管理
+            <small>用户列表</small>
 
         </h1>
 
@@ -25,10 +25,9 @@
 
     <!-- Main content -->
     <section class="content">
-        <!--menu列表-->
 
         <div class="layui-btn-group menu">
-            <button class="layui-btn" onclick="openViewBig(ctx+'/page/scheduleJob/add','新增')">新增</button>
+            <button class="layui-btn" onclick="openViewBig(ctx+'/page/user/add','新增')">新增</button>
             <button class="layui-btn layui-btn-danger" data-type="getCheckData">删除</button>
             <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
             <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
@@ -77,7 +76,7 @@
             // height: 'full-162'
             // , height: 'full-80',
             height: 'full-118',
-            url: ctx + '/scheduleJob/json/findAll/page', //数据接口
+            url: ctx + '/user/json/findAll/page', //数据接口
             page: {page: true}, //开启分页
             cols: [
                 [
@@ -118,7 +117,7 @@
         table.on('tool(laytable)', function (obj) {
             var data = obj.data;
             if (obj.event === 'view') {
-                openViewBig(ctx + '/scheduleJob/view/' + data.id, '菜单查看');
+                openViewBig(ctx + '/user/view/' + data.id, '菜单查看');
             } else if (obj.event === 'del') {
                 layer.confirm('真的删除行么', function (index) {
 
@@ -126,7 +125,7 @@
 
                     $.ajax({
                         type: 'delete',
-                        url: ctx + '/scheduleJob/' + data.id,
+                        url: ctx + '/user/' + data.id,
                         contentType: 'application/json',
                         dataType: "json",
                         // data: JSON.stringify(arr),
@@ -143,7 +142,7 @@
 
                 });
             } else if (obj.event === 'edit') {
-                openViewBig(ctx + '/scheduleJob/edit/' + data.id, '修改');
+                openViewBig(ctx + '/user/edit/' + data.id, '修改');
 
             }
         });
@@ -167,7 +166,7 @@
                 // };
                 $.ajax({
                     type: 'delete',
-                    url: ctx + '/scheduleJob/menu2',
+                    url: ctx + '/user/menu2',
                     // contentType: 'application/json',
                     // dataType: "json",
                     data: list,

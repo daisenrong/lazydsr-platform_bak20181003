@@ -11,9 +11,15 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * UserServiceImpl
@@ -27,70 +33,122 @@ import java.util.List;
 @Slf4j
 @CacheConfig(cacheNames = "user")
 public class UserServiceImpl implements UserService {
+    private static final String prefix = "user";
     @Autowired
     private UserMapper userMapper;
     @Autowired
     private UserDao userDao;
     //@Autowired
     //private RedisService redisService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
-    @CachePut(key = "#user.id")
     public User add(User user) {
-        if (user.getId() == null)
-            user.setId(UtilUUId.getId());
-        //return userMapper.add(user);
         int count = userMapper.insert(user);
-        if (count > 0)
-            return userMapper.selectByPrimaryKey(user.getId());
+        if (count > 0){
+            user=userMapper.selectByPrimaryKey(user.getId());
+            if (user!=null){
+                ValueOperations opsForValue = redisTemplate.opsForValue();
+                opsForValue.set(prefix+"::"+user.getUsername(), user, 60 * 60, TimeUnit.SECONDS);
+                opsForValue.set(prefix+"::"+user.getId(),user,60 * 60, TimeUnit.SECONDS);
+            }
+        }
         return null;
     }
 
     @Override
-    //@Cacheable(key = "#username", unless = "#result eq null ")
     public User findByUsername(String username) {
-        //User user = (User) redisService.get("user::" + username);
-        User user = null;
+        String key=prefix+"::"+username;
+        ValueOperations opsForValue = redisTemplate.opsForValue();
+        User user = (User) opsForValue.get(key);
         if (user == null) {
             log.warn("缓存获取失败，查询数据库");
             user = userMapper.selectByUsername(username);
-            //if (user != null)
-            //    redisService.set("user::" + username, user);
+            if (user!=null){
+                opsForValue.set(key, user, 60 * 60, TimeUnit.SECONDS);
+                opsForValue.set(prefix+"::"+user.getId(),user,60 * 60, TimeUnit.SECONDS);
+            }
         }
         return user;
     }
 
     @Override
-    @CacheEvict(key = "#id")
     public int delete(String id) {
-        return userMapper.deleteByPrimaryKey(id);
+        String key = prefix + "::" + id;
+        User user = findById(id);
+        int count = userMapper.deleteByPrimaryKey(id);
+        if (count>0){
+            redisTemplate.delete(key);
+            redisTemplate.delete(prefix+"::"+user.getUsername());
+            redisTemplate.opsForList().remove(key,1,key);
+        }
+        return count;
     }
 
     @Override
-    @CachePut(key = "#user.id")
     public User update(User user) {
+        String key = prefix + "::" + user.getId();
+        ValueOperations opsForValue = redisTemplate.opsForValue();
         int count = userMapper.updateByPrimaryKey(user);
-        if (count > 0)
-            return userMapper.selectByPrimaryKey(user.getId());
-        return null;
+        if (count > 0) {
+            user = userMapper.selectByPrimaryKey(user.getId());
+            opsForValue.set(key, user, 60 * 60, TimeUnit.SECONDS);
+            opsForValue.set(prefix+"::"+user.getUsername(),user,60 * 60, TimeUnit.SECONDS);
+        }
+        return user;
     }
 
     @Override
-    @Cacheable(key = "#id")
     public User findById(String id) {
-        return userMapper.selectByPrimaryKey(id);
+        String key = prefix + "::" + id;
+        ValueOperations opsForValue = redisTemplate.opsForValue();
+        User user = (User) opsForValue.get(key);
+        if (user == null) {
+            user = userMapper.selectByPrimaryKey(id);
+            if (user != null) {
+                opsForValue.set(key, user, 60 * 60, TimeUnit.SECONDS);
+                opsForValue.set(prefix+"::"+user.getUsername(),user,60 * 60, TimeUnit.SECONDS);
+            }
+        }
+        return user;
     }
 
     @Override
-    @Cacheable
     public List<User> findAllNormal() {
-        return userMapper.selectAllNormal();
+        String key = prefix + "::" + Thread.currentThread().getStackTrace()[1].getMethodName();
+        ListOperations opsForList = redisTemplate.opsForList();
+        List<String> list = opsForList.range(key, 0, -1);
+        if (CollectionUtils.isEmpty(list)) {
+            list = userMapper.selectAllIdNormal();
+            if (!CollectionUtils.isEmpty(list)) {
+                opsForList.rightPushAll(key, list);
+                redisTemplate.expire(key, 60 * 60, TimeUnit.SECONDS);
+            }
+        }
+        //组合数据
+        ArrayList<User> users = new ArrayList<>();
+        list.stream().forEach(id -> users.add(findById(id)));
+        return users;
     }
 
     @Override
-    @Cacheable
     public List<User> findAll() {
-        return userMapper.selectAll();
+        String key = prefix + "::" + Thread.currentThread().getStackTrace()[1].getMethodName();
+        ListOperations opsForList = redisTemplate.opsForList();
+        List<String> list = opsForList.range(key, 0, -1);
+        if (CollectionUtils.isEmpty(list)) {
+            list = userMapper.selectAllId();
+            if (!CollectionUtils.isEmpty(list)) {
+                opsForList.rightPushAll(key, list);
+                redisTemplate.expire(key, 60 * 60, TimeUnit.SECONDS);
+            }
+        }
+        //组合数据
+        ArrayList<User> users = new ArrayList<>();
+        list.stream().forEach(id -> users.add(findById(id)));
+        return users;
+
     }
 
 

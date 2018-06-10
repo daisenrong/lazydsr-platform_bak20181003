@@ -95,7 +95,7 @@ public class ScheduleJobController {
             return ResultBody.error(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("menu2")
+    @DeleteMapping()
     @ResponseBody
     public Object deleteMultipleById( Object[] ids) {
 
