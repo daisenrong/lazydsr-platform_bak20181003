@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.lazydsr.commons.result.ResultBody;
 import com.lazydsr.platform.entity.Menu;
 import com.lazydsr.platform.service.MenuService;
-import com.lazydsr.platform.vo.MenuZtreeVo;
+import com.lazydsr.platform.vo.MenuZtreeVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,33 +48,33 @@ public class MenuController {
     @ResponseBody
     public ResultBody findJson2Ztree() {
         List<Menu> menus = menuService.findAllNormal();
-        ArrayList<MenuZtreeVo> menuZtreeVos = new ArrayList<>();
+        ArrayList<MenuZtreeVO> menuZtreeVOS = new ArrayList<>();
 
         for (Menu menu : menus) {
-            MenuZtreeVo menuZtreeVo = new MenuZtreeVo();
-            menuZtreeVo.setId(menu.getId());
+            MenuZtreeVO menuZtreeVO = new MenuZtreeVO();
+            menuZtreeVO.setId(menu.getId());
             if (menu.getParentId().equals("")) {
-                menuZtreeVo.setpId("0");
+                menuZtreeVO.setpId("0");
             } else {
-                menuZtreeVo.setpId(menu.getParentId());
+                menuZtreeVO.setpId(menu.getParentId());
             }
-            menuZtreeVo.setName(menu.getName());
-            //menuZtreeVo.setIcon(menu.getIcon());
-            //menuZtreeVo.setIconSkin(menu.getIcon());
-            menuZtreeVo.setTarget(menu.getTarget());
-            menuZtreeVo.setUrl(menu.getUrl());
-            menuZtreeVos.add(menuZtreeVo);
+            menuZtreeVO.setName(menu.getName());
+            //menuZtreeVO.setIcon(menu.getIcon());
+            //menuZtreeVO.setIconSkin(menu.getIcon());
+            menuZtreeVO.setTarget(menu.getTarget());
+            menuZtreeVO.setUrl(menu.getUrl());
+            menuZtreeVOS.add(menuZtreeVO);
         }
         //添加根节点
-        MenuZtreeVo menuZtreeVo = new MenuZtreeVo();
-        menuZtreeVo.setName("根");
-        menuZtreeVo.setId("0");
-        menuZtreeVo.setOpen(true);
-        menuZtreeVo.setShowRemoveBtn(false);
-        menuZtreeVo.setShowRenameBtn(false);
-        menuZtreeVos.add(menuZtreeVo);
+        MenuZtreeVO menuZtreeVO = new MenuZtreeVO();
+        menuZtreeVO.setName("根");
+        menuZtreeVO.setId("0");
+        menuZtreeVO.setOpen(true);
+        menuZtreeVO.setShowRemoveBtn(false);
+        menuZtreeVO.setShowRenameBtn(false);
+        menuZtreeVOS.add(menuZtreeVO);
 
-        return ResultBody.success(menuZtreeVos);
+        return ResultBody.success(menuZtreeVOS);
     }
 
 

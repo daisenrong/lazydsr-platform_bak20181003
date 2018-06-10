@@ -96,20 +96,24 @@
                     {field: 'cron', title: 'cron表达式', width: 140},
                     {field: 'description', title: '描述', width: 100},
                     {
-                        field: 'jobstatus', title: '启用', width: 80, sort: true, templet: function (d) {
-                            return getIsOrNo(d.jobstatus);
-                        }, unresize: true
-                    },
-
-                    {
-                        field: 'status', title: '数据状态', width: 80, sort: true, templet: function (d) {
-                            if (d.status == 0) {
-                                return '正常';
+                        field: 'jobstatus', title: '状态', width: 80, sort: true, templet: function (d) {
+                            if (d.jobstatus == 0) {
+                                return '启用';
                             } else {
-                                return '<span style="color: #f50305;">删除</span>';
+                                return '<span style="color: #f50305;">禁用</span>';
                             }
                         }, unresize: true
                     },
+
+                    // {
+                    //     field: 'status', title: '数据状态', width: 80, sort: true, templet: function (d) {
+                    //         if (d.status == 0) {
+                    //             return '正常';
+                    //         } else {
+                    //             return '<span style="color: #f50305;">删除</span>';
+                    //         }
+                    //     }, unresize: true
+                    // },
                     {fixed: 'right', title: '操作', width: 178, templet: '#laytableBar', unresize: true}
                 ]
             ]
@@ -158,7 +162,7 @@
                 }
                 var list = {};
                 for (var i = 0; i < data.length; i++) {
-                    list["ids["+i+"]"] = data[i].id;
+                    list["ids[" + i + "]"] = data[i].id;
                 }
                 layer.msg("功能暂不可用");
                 return;
@@ -172,7 +176,7 @@
                     // dataType: "json",
                     data: list,
                     // traditional: true,
-                    async:false,
+                    async: false,
                     // data: {ids: JSON.stringify(ids)},
                     success: function (d) {
                         if (!d) {

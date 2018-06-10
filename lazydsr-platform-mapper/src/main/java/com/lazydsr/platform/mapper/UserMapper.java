@@ -16,7 +16,8 @@ public interface UserMapper extends BaseMapper<User> {
             "current_login_date, last_login_date, order_num, account_type, creator, create_date, ",
             "modifier, modify_date, status",
             "from sys_user",
-            "where username = #{username,jdbcType=VARCHAR}"
+            "where username = #{username,jdbcType=VARCHAR}",
+            "and status=0"
     })
     @Results({
             @Result(column = "id", property = "id", jdbcType = JdbcType.VARCHAR, id = true),

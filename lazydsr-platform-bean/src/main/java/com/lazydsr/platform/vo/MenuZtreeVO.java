@@ -13,7 +13,7 @@ import lombok.Data;
  * Info: 用于menu的ztree 中使用的json数据
  */
 
-public class MenuZtreeVo {
+public class MenuZtreeVO {
     private String id;
     @JsonProperty(value = "pId")
     private String pId;

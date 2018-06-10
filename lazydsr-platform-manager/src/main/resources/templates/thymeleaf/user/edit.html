@@ -26,7 +26,7 @@
 
         <!--<div class="row">-->
         <!--<div class="col-xs-12">-->
-        <form class="form-horizontal" id="lazyform" th:action="@{/scheduleJob}" method="post">
+        <form class="form-horizontal" id="lazyform" th:action="@{/user}" method="post">
             <input type="hidden" name="_method" th:value="put">
             <div class="form-group">
                 <label for="id" class="col-sm-2 control-label">ID</label>
@@ -35,62 +35,99 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="name" class="col-sm-2 control-label">Name</label>
+                <label for="name" class="col-sm-2 control-label">姓名</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="name" readonly th:value="${data.name}">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="name" th:value="${data.name}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="jobgroup" class="col-sm-2 control-label">job group</label>
+                <label for="username" class="col-sm-2 control-label">登录名</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="jobgroup" name="jobgroup" placeholder="jobgroup" readonly th:value="${data.jobgroup}">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="username" th:value="${data.username}">
+                </div>
+            </div>
+            <!--<div class="form-group">-->
+                <!--<label for="password" class="col-sm-2 control-label">password</label>-->
+                <!--<div class="col-sm-10">-->
+                    <!--<input type="text" class="form-control" id="password" name="password" placeholder="password" readonly th:value="${data.password}">-->
+                <!--</div>-->
+            <!--</div>-->
+
+
+
+
+            <div class="form-group">
+                <label for="workcode" class="col-sm-2 control-label">workcode</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="workcode" name="workcode" placeholder="workcode" th:value="${data.workcode}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="classpath" class="col-sm-2 control-label">classpath</label>
+                <label for="sumPasswordWrong" class="col-sm-2 control-label">sumPasswordWrong</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="classpath" name="classpath" placeholder="classpath" th:value="${data.classpath}">
+                    <input type="number" class="form-control" id="sumPasswordWrong" name="sumPasswordWrong" placeholder="sumPasswordWrong" th:value="${data.sumPasswordWrong}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="method" class="col-sm-2 control-label">method</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="method" name="method" placeholder="method" th:value="${data.method}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="concurrent" class="col-sm-2 control-label">是否并发</label>
+                <label for="passwordLock" class="col-sm-2 control-label">passwordLock</label>
                 <div class="col-sm-10">
                     <!--<input type="email" class="form-control" id="Parent" placeholder="Email" readonly th:value="${menu.parentId}">-->
-                    <select id="concurrent" name="concurrent" class="form-control">
-                        <option value="1" th:selected="${data.concurrent==1}">否</option>
-                        <option value="0" th:selected="${data.concurrent==0}">是</option>
+                    <select id="passwordLock" name="passwordLock" class="form-control">
+                        <option value="1" th:selected="${data.passwordLock==1}">否</option>
+                        <option value="0" th:selected="${data.passwordLock==0}">是</option>
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <label for="cron" class="col-sm-2 control-label">cron</label>
+                <label for="email" class="col-sm-2 control-label">email</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="cron" name="cron" placeholder="cron" th:value="${data.cron}">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="email" th:value="${data.email}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="description" class="col-sm-2 control-label">description</label>
+                <label for="mobile" class="col-sm-2 control-label">mobile</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="description" name="description" placeholder="description" th:value="${data.description}">
+                    <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="mobile" th:value="${data.mobile}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="telphone" class="col-sm-2 control-label">telphone</label>
+                <div class="col-sm-10">
+                    <input type="tel" class="form-control" id="telphone" name="telphone" placeholder="telphone" th:value="${data.telphone}">
+                </div>
+            </div>
+            <!--<div class="form-group">-->
+                <!--<label for="mobile" class="col-sm-2 control-label">mobile</label>-->
+                <!--<div class="col-sm-10">-->
+                    <!--<input type="tel" class="form-control" id="mobile" name="mobile" placeholder="mobile" th:value="${data.mobile}">-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="form-group">
+                <label for="idCard" class="col-sm-2 control-label">idCard</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="idCard" name="idCard" placeholder="idCard" th:value="${data.idCard}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="currentLoginDate" class="col-sm-2 control-label">最后登录时间</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="currentLoginDate"  placeholder="currentLoginDate" readonly th:value="${data.currentLoginDate}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="createDate" class="col-sm-2 control-label">创建时间</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="createDate" name="createDate" readonly placeholder="createDate" th:value="${data.createDate}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="modifyDate" class="col-sm-2 control-label">最后修改时间</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="modifyDate"  placeholder="modifyDate" readonly th:value="${data.modifyDate}">
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="jobstatus" class="col-sm-2 control-label">状态</label>
-                <div class="col-sm-10">
-                    <!--<input type="email" class="form-control" id="Parent" placeholder="Email" readonly th:value="${menu.parentId}">-->
-                    <select id="jobstatus" name="jobstatus" class="form-control">
-                        <option value="1" th:selected="${data.jobstatus=='1'}">禁用</option>
-                        <option value="0" th:selected="${data.jobstatus=='0'}">正常</option>
-                    </select>
-                </div>
-            </div>
+
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button id="submit" type="button" class="btn btn-primary">修改</button>
@@ -110,7 +147,7 @@
             //几个参数需要注意一下
             type: "put",//方法类型
             dataType: "json",//预期服务器返回的数据类型
-            url: ctx + "/scheduleJob",//url
+            url: ctx + "/user",//url
             data: $('#lazyform').serialize(),
             success: function (result) {
                 // console.log(result);//打印服务端返回的数据(调试用)
@@ -119,13 +156,13 @@
 
                     parent.layer.msg("更新成功");
                     parent.table.reload("laytable", {});
-                    window.location.href = ctx + "/scheduleJob/view/" + $("#id").val();
+                    window.location.href = ctx + "/user/view/" + $("#id").val();
                 }else {
                     parent.layer.msg(result.msg);
                 }
             },
             error: function () {
-                alert("异常！");
+                layer.msg("异常！");
             }
         });
     });

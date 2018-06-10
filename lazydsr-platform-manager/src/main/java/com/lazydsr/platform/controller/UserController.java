@@ -4,15 +4,21 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lazydsr.commons.result.HttpStatus;
 import com.lazydsr.commons.result.ResultBody;
+import com.lazydsr.platform.config.security.CustomPasswordEncoder;
+import com.lazydsr.platform.convert.UserConvert;
 import com.lazydsr.platform.entity.User;
 import com.lazydsr.platform.entity.User;
 import com.lazydsr.platform.service.UserService;
+import com.lazydsr.platform.vo.UserVO;
+import com.lazydsr.util.time.UtilDateTime;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +29,7 @@ import java.util.Map;
  * PACKAGE_NAME: com.lazydsr.platform.controller
  * Created by Lazy on 2018/3/8 11:10
  * Version: 0.1
- * Info: @TODO:...
+ * Info: userController
  */
 @Controller
 @RequestMapping("/user")
@@ -38,13 +44,20 @@ public class UserController {
         Map map = new HashMap();
         //List<User> all = userService.findAll();
         PageHelper.startPage(page, limit);
-        List<User> Users = userService.findAllNormal();
-        PageInfo<User> pageInfo = new PageInfo<>(Users);
+        List<User> users = userService.findAllNormal();
+        //使用VO对象返回
+        List<UserVO> result=new ArrayList<>();
+        users.stream().forEach(user -> {
+            UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(user,userVO);
+            result.add(userVO);
+        });
+        PageInfo<UserVO> pageInfo = new PageInfo<>(result);
 
         map.put("code", 0);
         map.put("msg", "");
         map.put("count", pageInfo.getTotal());
-        map.put("data", Users);
+        map.put("data", result);
         //map.put("code", 0);
         //map.put("msg", "");
         //map.put("count", menus.getTotalElements());
@@ -55,9 +68,13 @@ public class UserController {
 
     @PostMapping
     @ResponseBody
-    public User add(User User) {
-        User job = userService.add(User);
-        return job;
+    public UserVO add(User user) {
+        CustomPasswordEncoder customPasswordEncoder = new CustomPasswordEncoder();
+        user.setPassword(customPasswordEncoder.encode(user.getPassword()));
+        user = userService.add(user);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user,userVO);
+        return userVO;
     }
 
     @GetMapping("/{type}/{id}")
@@ -68,15 +85,16 @@ public class UserController {
         } else {
             url = "user/view";
         }
-        User User = userService.findById(id);
-        map.put("data", User);
+        User user = userService.findById(id);
+        map.put("data", UserConvert.user2UserVo(user));
         return url;
     }
 
     @PutMapping
     @ResponseBody
-    public Object updateById(User job) {
-        User User = userService.update(job);
+    public Object updateById(User user) {
+        user.setModifyDate(UtilDateTime.getCurrDateTime());
+        User User = userService.update(user);
         if (User != null)
             return ResultBody.success();
         else

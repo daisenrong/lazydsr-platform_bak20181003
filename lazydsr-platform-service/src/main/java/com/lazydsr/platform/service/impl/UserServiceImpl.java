@@ -4,6 +4,7 @@ import com.lazydsr.platform.dao.UserDao;
 import com.lazydsr.platform.entity.User;
 import com.lazydsr.platform.mapper.UserMapper;
 import com.lazydsr.platform.service.UserService;
+import com.lazydsr.util.MD5.UtilMD5;
 import com.lazydsr.util.id.UtilUUId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,31 +44,38 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+
     @Override
     public User add(User user) {
         int count = userMapper.insert(user);
-        if (count > 0){
-            user=userMapper.selectByPrimaryKey(user.getId());
-            if (user!=null){
+        if (count > 0) {
+            user = userMapper.selectByPrimaryKey(user.getId());
+            if (user != null) {
                 ValueOperations opsForValue = redisTemplate.opsForValue();
-                opsForValue.set(prefix+"::"+user.getUsername(), user, 60 * 60, TimeUnit.SECONDS);
-                opsForValue.set(prefix+"::"+user.getId(),user,60 * 60, TimeUnit.SECONDS);
+                opsForValue.set(prefix + "::" + user.getUsername(), user, 60 * 60, TimeUnit.SECONDS);
+                opsForValue.set(prefix + "::" + user.getId(), user, 60 * 60, TimeUnit.SECONDS);
+                redisTemplate.opsForList().rightPush(prefix+"::findAll",user.getId());
+                redisTemplate.expire(prefix+"::findAll",60*60,TimeUnit.SECONDS);
+                if (user.getStatus()==0){
+                    redisTemplate.opsForList().rightPush(prefix+"::findAllNormal",user.getId());
+                    redisTemplate.expire(prefix+"::findAllNormal",60*60,TimeUnit.SECONDS);
+                }
             }
         }
-        return null;
+        return user;
     }
 
     @Override
     public User findByUsername(String username) {
-        String key=prefix+"::"+username;
+        String key = prefix + "::" + username;
         ValueOperations opsForValue = redisTemplate.opsForValue();
         User user = (User) opsForValue.get(key);
         if (user == null) {
             log.warn("缓存获取失败，查询数据库");
             user = userMapper.selectByUsername(username);
-            if (user!=null){
+            if (user != null) {
                 opsForValue.set(key, user, 60 * 60, TimeUnit.SECONDS);
-                opsForValue.set(prefix+"::"+user.getId(),user,60 * 60, TimeUnit.SECONDS);
+                opsForValue.set(prefix + "::" + user.getId(), user, 60 * 60, TimeUnit.SECONDS);
             }
         }
         return user;
@@ -77,11 +85,13 @@ public class UserServiceImpl implements UserService {
     public int delete(String id) {
         String key = prefix + "::" + id;
         User user = findById(id);
-        int count = userMapper.deleteByPrimaryKey(id);
-        if (count>0){
+        //int count = userMapper.deleteByPrimaryKey(id);
+        user.setStatus(1);
+        int count = userMapper.updateByPrimaryKey(user);
+        if (count > 0) {
             redisTemplate.delete(key);
-            redisTemplate.delete(prefix+"::"+user.getUsername());
-            redisTemplate.opsForList().remove(key,1,key);
+            redisTemplate.delete(prefix + "::" + user.getUsername());
+            redisTemplate.opsForList().remove(prefix+"::findAllNormal", 1, id);
         }
         return count;
     }
@@ -90,11 +100,12 @@ public class UserServiceImpl implements UserService {
     public User update(User user) {
         String key = prefix + "::" + user.getId();
         ValueOperations opsForValue = redisTemplate.opsForValue();
-        int count = userMapper.updateByPrimaryKey(user);
+
+        int count = userMapper.updateByPrimaryKeySelective(user);
         if (count > 0) {
             user = userMapper.selectByPrimaryKey(user.getId());
             opsForValue.set(key, user, 60 * 60, TimeUnit.SECONDS);
-            opsForValue.set(prefix+"::"+user.getUsername(),user,60 * 60, TimeUnit.SECONDS);
+            opsForValue.set(prefix + "::" + user.getUsername(), user, 60 * 60, TimeUnit.SECONDS);
         }
         return user;
     }
@@ -108,7 +119,7 @@ public class UserServiceImpl implements UserService {
             user = userMapper.selectByPrimaryKey(id);
             if (user != null) {
                 opsForValue.set(key, user, 60 * 60, TimeUnit.SECONDS);
-                opsForValue.set(prefix+"::"+user.getUsername(),user,60 * 60, TimeUnit.SECONDS);
+                opsForValue.set(prefix + "::" + user.getUsername(), user, 60 * 60, TimeUnit.SECONDS);
             }
         }
         return user;

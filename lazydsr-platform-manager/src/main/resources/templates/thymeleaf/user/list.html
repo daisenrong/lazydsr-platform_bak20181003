@@ -84,22 +84,12 @@
                     {field: 'id', title: 'ID', width: 80, sort: true},
                     {field: 'name', title: '名称', width: 100},
                     // {field: 'enName', title: '英文名称', width: 80, sort: true},
-                    {field: 'jobgroup', title: '分组', width: 100},
-                    {field: 'classpath', title: '类', width: 200},
-                    {field: 'method', title: '方法', width: 140},
-                    {
-                        field: 'concurrent', title: '并发执行', width: 80, sort: true, templet: function (d) {
-                            return getIsOrNo(d.concurrent);
-                        }, unresize: true
-                    },
-                    {field: 'cron', title: 'cron表达式', width: 140},
-                    {field: 'description', title: '描述', width: 100},
-                    {
-                        field: 'jobstatus', title: '启用', width: 80, sort: true, templet: function (d) {
-                            return getIsOrNo(d.jobstatus);
-                        }, unresize: true
-                    },
-
+                    {field: 'username', title: 'username', width: 100},
+                    {field: 'email', title: 'email', width: 160},
+                    {field: 'mobile', title: 'mobile', width: 140},
+                    {field: 'currentLoginDate', title: '最后登录时间', width: 170},
+                    {field: 'createDate', title: '创建时间', width: 170},
+                    {field: 'modifyDate', title: '修改时间', width: 170},
                     {
                         field: 'status', title: '数据状态', width: 80, sort: true, templet: function (d) {
                             if (d.status == 0) {
